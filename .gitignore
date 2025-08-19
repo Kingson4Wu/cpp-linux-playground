@@ -39,3 +39,12 @@
 
 # debug information files
 *.dwo
+
+# Project-specific
+/build/
+
+# IDE-specific
+.vscode/
+
+# OS-specific
+.DS_Store

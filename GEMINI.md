@@ -74,3 +74,63 @@ WORKDIR /app
 2. 熟练使用 Linux 系统调用和工具链
 3. 能够编写高性能多线程网络服务
 4. 具备调试、性能分析和工程化能力
+
+## 项目整体计划
+
+- [x] **阶段 0：项目初始化**
+  - [x] 初始化 Git 仓库
+  - [x] 配置 `.gitignore`
+  - [x] 搭建基础 CMake 构建框架
+  - [x] 编写项目说明 `GEMINI.md`
+- [ ] **阶段 1：语法与工具熟悉**
+  - [ ] 命令行工具集 (cli-tools)
+    - [ ] `ls`
+    - [ ] `grep`
+    - [ ] `wc`
+  - [ ] JSON 解析器 (json-parser)
+  - [ ] 多线程日志库 (logger)
+- [ ] **阶段 2：系统编程**
+  - [ ] 多线程下载器 (downloader)
+  - [ ] 进程管理工具 (proc-manager)
+  - [ ] 内存池分配器 (memory-pool)
+- [ ] **阶段 3：网络编程**
+  - [ ] TCP 多线程聊天室 (chat-room)
+  - [ ] HTTP 静态文件服务器 (http-server)
+  - [ ] 文件传输服务器 (file-transfer)
+- [ ] **阶段 4：综合实战**
+  - [ ] mini-Redis（kv-store）
+  - [ ] mini-Search（search-engine）
+  - [ ] 高并发爬虫 (web-crawler)
+
+## 当前进度
+项目当前处于 **阶段 1：语法与工具熟悉**，正在开始实现 **命令行工具集** 中的 `ls` 命令。基础的 CMake 项目结构已搭建完成并可以成功编译。
+
+## 目录结构规划
+为了保持项目清晰和可扩展性，约定以下目录结构。源代码按项目阶段进行组织，每个子项目（如 `cli-tools`）都包含独立的 `src` 和 `include` 目录，以实现更好的模块化。
+```
+.
+├── CMakeLists.txt      # 根 CMake 配置，管理所有子项目
+├── build/              # 编译产物目录 (不提交到 Git)
+├── docs/               # 项目文档
+├── docker/             # Docker 相关配置，如 Dockerfile
+├── phase1/             # 阶段 1：语法与工具熟悉
+│   ├── CMakeLists.txt  # 聚合 phase1 的项目
+│   ├── cli-tools/
+│   │   ├── CMakeLists.txt
+│   │   ├── include/
+│   │   │   └── ls.h
+│   │   └── src/
+│   │       └── ls.cpp
+│   ├── json-parser/
+│   └── logger/
+├── phase2/             # 阶段 2：系统编程
+├── phase3/             # 阶段 3：网络编程
+├── phase4/             # 阶段 4：综合实战
+├── scripts/            # 辅助脚本 (构建、测试、运行)
+├── tests/              # 测试文件
+│   └── phase1/
+│       └── cli-tools/
+│           ├── CMakeLists.txt
+│           └── ls_test.cpp
+└── third_party/        # 第三方依赖库
+```

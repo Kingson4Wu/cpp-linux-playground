@@ -199,3 +199,22 @@ make -j
 * **muduo**（高性能网络库）
 * **leveldb**（Google KV 存储引擎）
 * **nginx**（事件驱动模型，虽然是 C 但对 C++ 网络编程帮助很大）
+
+====
+
+1.  **编译项目** (如果未编译或有改动):
+    ```bash
+    # 配置
+    cmake -S . -B build
+    # 构建
+    cmake --build build
+    ```
+
+2.  **运行 `my_ls` 程序**:
+    可执行文件位于 `build` 目录中。从项目根目录运行以下命令：
+    ```bash
+    ./build/phase1/cli-tools/my_ls
+    ```
+
+运行后，你应该会看到输出：
+`Hello from my_ls!`

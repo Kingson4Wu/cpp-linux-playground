@@ -56,7 +56,37 @@ A hands-on C++ learning playground for Linux, covering system programming, netwo
 - **平台**：Linux (推荐 Ubuntu / Debian)  
 - **构建工具**：CMake / Makefile  
 - **调试分析**：GDB / Valgrind / Perf / AddressSanitizer  
-- **网络**：Socket API / epoll / Reactor 模型  
+- **网络**：Socket API / epoll / Reactor 模型
+
+## 🐳 Docker 开发环境
+
+为了确保代码在生产环境中的Linux系统上能够正常运行，我们提供了基于Docker的开发环境：
+
+- 一致的开发和测试环境
+- 模拟生产环境的Linux系统
+- 预配置的开发工具链
+
+### 使用方法
+
+```bash
+# 构建Docker镜像
+./scripts/docker-dev.sh build
+
+# 启动容器
+./scripts/docker-dev.sh run
+
+# 进入容器
+./scripts/docker-dev.sh exec
+
+# 运行测试
+./scripts/docker-dev.sh test
+
+# 调试程序
+./scripts/docker-dev.sh debug
+
+# 停止容器
+./scripts/docker-dev.sh stop
+```  
 
 ---
 

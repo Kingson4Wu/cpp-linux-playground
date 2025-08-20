@@ -43,6 +43,9 @@
 # Project-specific
 /build/
 
+# Docker
+docker-compose.override.yml
+
 # IDE-specific
 .vscode/
 

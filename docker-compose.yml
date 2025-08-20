@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  cpp-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cpp-linux-playground
+    working_dir: /app
+    volumes:
+      - .:/app
+      - cpp-build:/app/build
+    stdin_open: true
+    tty: true
+    privileged: true  # Required for debugging with gdb
+    environment:
+      - DISPLAY=${DISPLAY}
+    command: /bin/bash
+
+volumes:
+  cpp-build:
+    name: cpp-linux-playground-build

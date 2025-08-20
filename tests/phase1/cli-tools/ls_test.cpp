@@ -1,3 +1,27 @@
+/*
+ * ls_test.cpp - Unit tests for the ls command implementation
+ *
+ * How to run these tests:
+ *
+ * 1. Build the project:
+ *    mkdir -p build && cd build && cmake .. && make
+ *
+ * 2. Run all tests:
+ *    ctest
+ *
+ * 3. Run the test executable directly:
+ *    ./tests/phase1/cli-tools/ls_test
+ *
+ * 4. Run a specific test case:
+ *    ./tests/phase1/cli-tools/ls_test --gtest_filter=LsTest.ListsDirectoryContentsSorted
+ *
+ * Test cases covered:
+ * - ListsDirectoryContentsSorted: Verifies directory contents are listed in alphabetical order
+ * - ListsEmptyDirectory: Tests behavior with an empty directory
+ * - ListsSingleFile: Tests listing a single file
+ * - HandlesNonExistentPath: Tests error handling for non-existent paths
+ */
+
 #include "gtest/gtest.h"
 #include "ls.h"
 #include <sstream>

@@ -1,3 +1,26 @@
+/*
+ * ls_lib.cpp - Implementation of directory listing functionality
+ *
+ * This file contains the core implementation of the directory listing feature
+ * used by the my_ls command-line tool.
+ *
+ * How to Run with Docker:
+ *   1. Build and run my_ls in Docker container:
+ *      ./scripts/docker-dev.sh run-ls
+ *
+ *   2. Or, to build and run manually in Docker:
+ *      ./scripts/docker-dev.sh exec
+ *      mkdir -p build && cd build
+ *      cmake ..
+ *      make
+ *      ./phase1/cli-tools/my_ls [path]
+ *
+ * How to Run without Docker (from project root):
+ *   1. cmake -S . -B build
+ *   2. cmake --build build -- -j
+ *   3. ./build/phase1/cli-tools/my_ls [path]
+ */
+
 #include "ls.h"
 #include <iostream>
 #include <vector>

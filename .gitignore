@@ -50,4 +50,7 @@ docker-compose.override.yml
 .vscode/
 
 # OS-specific
-.DS_Store!CMakePresets.json
+.DS_Store
+
+# CMake presets (we want to track this file)
+!CMakePresets.json

@@ -50,4 +50,4 @@ docker-compose.override.yml
 .vscode/
 
 # OS-specific
-.DS_Store
+.DS_Store!CMakePresets.json

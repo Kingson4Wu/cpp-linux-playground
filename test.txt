@@ -1,0 +1,8 @@
+This is a test file for the grep command.
+It contains multiple lines of text.
+Some lines will match the pattern we search for.
+Others will not match the pattern.
+This file is used to test the grep functionality.
+Pattern matching is an important feature.
+We can search for specific words or phrases.
+The grep command is useful for finding text.

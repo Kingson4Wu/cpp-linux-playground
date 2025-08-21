@@ -114,7 +114,7 @@ WORKDIR /app
 - [ ] **阶段 1：语法与工具熟悉**
   - [ ] 命令行工具集 (cli-tools)
     - [x] `ls`
-    - [ ] `grep`
+    - [x] `grep`
     - [ ] `wc`
   - [ ] JSON 解析器 (json-parser)
   - [ ] 多线程日志库 (logger)
@@ -132,7 +132,7 @@ WORKDIR /app
   - [ ] 高并发爬虫 (web-crawler)
 
 ## 当前进度
-项目当前处于 **阶段 1：语法与工具熟悉**，已完成 **命令行工具集** 中的 `ls` 命令。
+项目当前处于 **阶段 1：语法与工具熟悉**，已完成 **命令行工具集** 中的 `ls` 和 `grep` 命令。
 
 ## 目录结构规划
 为了保持项目清晰和可扩展性，约定以下目录结构。源代码按项目阶段进行组织，每个子项目（如 `cli-tools`）都包含独立的 `src` 和 `include` 目录，以实现更好的模块化。
@@ -147,8 +147,11 @@ WORKDIR /app
 │   ├── cli-tools/
 │   │   ├── CMakeLists.txt
 │   │   ├── include/
+│   │   │   ├── grep.h
 │   │   │   └── ls.h
 │   │   └── src/
+│   │       ├── grep_lib.cpp
+│   │       ├── grep_main.cpp
 │   │       ├── ls_lib.cpp
 │   │       └── ls_main.cpp
 │   ├── json-parser/
@@ -180,6 +183,9 @@ WORKDIR /app
 
 # 构建并运行 my_ls
 ./scripts/docker-dev.sh run-ls
+
+# 构建并运行 my_grep
+./scripts/docker-dev.sh run-grep
 
 # 运行测试
 ./scripts/docker-dev.sh test

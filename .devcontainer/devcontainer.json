@@ -13,14 +13,15 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "mkdir -p build && cd build && cmake ..",
+	"postCreateCommand": "mkdir -p build && cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"settings": {
 				"cmake.configureOnOpen": true,
-				"cmake.buildDirectory": "${workspaceFolder}/build"
+				"cmake.buildDirectory": "${workspaceFolder}/build",
+				"cmake.generator": "Ninja"
 			},
 			"extensions": [
 				"ms-vscode.cpptools",

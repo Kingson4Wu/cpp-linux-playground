@@ -31,7 +31,7 @@
 - mini-Search（搜索引擎）
 - 高并发爬虫
 
-## 重要约定
+## 注意事项
 - **编译标准：** `-std=c++20`
 - **构建目录：** `build/`
 - **源码目录：** 按阶段组织（如 `phase1/cli-tools/src/`）
@@ -45,6 +45,10 @@
 - **开发规范：**
   - 所有代码注释和说明必须使用英文
   - 除非有用户的明确指令，否则不要提交代码变动到 Git
+- **质量保证：**
+  - 编写单元测试验证核心功能
+  - 使用代码覆盖率工具确保测试质量（目标覆盖率 > 90%）
+  - 重视内存安全，使用 valgrind/AddressSanitizer 检测
 
 ## Git 提交规范
 
@@ -296,3 +300,17 @@ cmake --build build -- -j
 4. 运行所有单元测试
 
 可以通过 GitHub 仓库的 "Actions" 标签页查看构建和测试结果。
+
+### 代码覆盖率
+项目支持生成代码覆盖率报告，以确保测试质量：
+
+```bash
+# 使用 Docker 生成覆盖率报告
+./scripts/docker-dev.sh coverage
+```
+
+覆盖率报告将生成在 `build_coverage/coverage/` 目录中：
+- HTML 格式报告：`build_coverage/coverage/index.html`
+- XML 格式报告：`build_coverage/coverage/coverage.xml`
+
+目标是达到 90% 以上的代码覆盖率，以确保核心功能得到充分测试。

@@ -81,12 +81,33 @@ A hands-on C++ learning playground for Linux, covering system programming, netwo
 # 运行测试
 ./scripts/docker-dev.sh test
 
+# 生成代码覆盖率报告
+./scripts/docker-dev.sh coverage
+
+# 在浏览器中打开代码覆盖率报告
+./scripts/docker-dev.sh open-coverage
+
 # 调试程序
 ./scripts/docker-dev.sh debug
 
 # 停止容器
 ./scripts/docker-dev.sh stop
-```  
+```
+
+## 📊 代码覆盖率
+
+为了确保代码质量和测试完整性，项目支持生成代码覆盖率报告：
+
+```bash
+# 使用 Docker 生成覆盖率报告
+./scripts/docker-dev.sh coverage
+```
+
+覆盖率报告将生成在 `build_coverage/coverage/` 目录中：
+- HTML 格式报告：`build_coverage/coverage/index.html`
+- XML 格式报告：`build_coverage/coverage/coverage.xml`
+
+目标是达到 90% 以上的代码覆盖率，以确保核心功能得到充分测试。  
 
 ---
 

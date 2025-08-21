@@ -147,9 +147,10 @@ WORKDIR /app
 
 1. 所有项目必须在Docker容器内编译和运行
 2. 使用CMake管理构建，支持Debug/Release模式
-3. 重视内存安全，使用valgrind/AddressSanitizer检测
-4. 编写单元测试验证核心功能
-5. 每个项目完成后进行性能测试和优化
+3. 编写单元测试验证核心功能
+4. 使用代码覆盖率工具确保测试质量（目标覆盖率 > 90%）
+5. 重视内存安全，使用valgrind/AddressSanitizer检测
+6. 每个项目完成后进行性能测试和优化
 
 ## 代码规范
 
@@ -285,5 +286,19 @@ cmake --build build -- -j
 3. CMake Tools 会自动配置项目 (cmake -S . -B build)
 4. 在底部状态栏选择目标 (如 "my_ls")
 5. 按 F5 构建并调试容器内程序
+
+### 代码覆盖率
+项目支持生成代码覆盖率报告，以确保测试质量：
+
+```bash
+# 使用 Docker 生成覆盖率报告
+./scripts/docker-dev.sh coverage
+```
+
+覆盖率报告将生成在 `build_coverage/coverage/` 目录中：
+- HTML 格式报告：`build_coverage/coverage/index.html`
+- XML 格式报告：`build_coverage/coverage/coverage.xml`
+
+目标是达到 90% 以上的代码覆盖率，以确保核心功能得到充分测试。
 
 通过这个项目的学习，开发者可以系统地掌握Linux C++后端开发的核心技能，为将来从事高性能后端开发工作打下坚实的基础。

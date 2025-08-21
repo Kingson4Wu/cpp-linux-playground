@@ -11,7 +11,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
+            "MIMode": "lldb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -19,8 +19,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build-my-ls",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "preLaunchTask": "CMake: Build",
+            "miDebuggerPath": "/usr/bin/lldb-mi"
         },
         {
             "name": "Debug ls_test",
@@ -32,7 +32,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
+            "MIMode": "lldb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -40,8 +40,8 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "cmake-build",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "preLaunchTask": "CMake: Build",
+            "miDebuggerPath": "/usr/bin/lldb-mi"
         }
     ]
 }

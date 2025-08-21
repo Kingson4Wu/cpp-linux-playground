@@ -62,11 +62,11 @@ protected:
 };
 
 TEST_F(GrepTest, MatchesPatternInText) {
-    // 验证文件内容
+    // Verify file content
     std::ifstream verify_file(test_file);
     std::string line;
     int line_num = 0;
-    std::cout << "验证文件内容:" << std::endl;
+    std::cout << "Verifying file content:" << std::endl;
     while (std::getline(verify_file, line)) {
         line_num++;
         std::cout << line_num << ": " << line << std::endl;
@@ -76,13 +76,13 @@ TEST_F(GrepTest, MatchesPatternInText) {
     std::stringstream ss;
     bool success = grep_file("pattern", test_file, ss, false);
 
-    // 首先检查函数是否成功执行
+    // First check if function executed successfully
     EXPECT_TRUE(success);
 
     std::string result = ss.str();
-    std::cout << "实际grep输出: " << result << std::endl;
+    std::cout << "Actual grep output: " << result << std::endl;
     EXPECT_NE(result.find("This line contains the pattern"), std::string::npos);
-    // 注意：由于我们搜索的是"pattern"（小写），所以不会匹配到"Pattern"（大写）
+    // Note: Since we're searching for "pattern" (lowercase), it won't match "Pattern" (uppercase)
     EXPECT_EQ(result.find("Pattern appears here too"), std::string::npos);
     EXPECT_EQ(result.find("This is the first line"), std::string::npos);
 }
@@ -96,11 +96,11 @@ TEST_F(GrepTest, NoMatchInText) {
 }
 
 TEST_F(GrepTest, MatchesWithLineNumbers) {
-    // 验证文件内容
+    // Verify file content
     std::ifstream verify_file(test_file);
     std::string line;
     int line_num = 0;
-    std::cout << "验证文件内容:" << std::endl;
+    std::cout << "Verifying file content:" << std::endl;
     while (std::getline(verify_file, line)) {
         line_num++;
         std::cout << line_num << ": " << line << std::endl;
@@ -110,13 +110,13 @@ TEST_F(GrepTest, MatchesWithLineNumbers) {
     std::stringstream ss;
     bool success = grep_file("pattern", test_file, ss, true);
 
-    // 首先检查函数是否成功执行
+    // First check if function executed successfully
     EXPECT_TRUE(success);
 
     std::string result = ss.str();
-    std::cout << "带行号的实际输出: " << result << std::endl;
+    std::cout << "Actual output with line numbers: " << result << std::endl;
     EXPECT_NE(result.find("2:This line contains the pattern"), std::string::npos);
-    // 注意：由于我们搜索的是"pattern"（小写），所以不会匹配到"Pattern"（大写）
+    // Note: Since we're searching for "pattern" (lowercase), it won't match "Pattern" (uppercase)
     EXPECT_EQ(result.find("4:Pattern appears here too"), std::string::npos);
 }
 

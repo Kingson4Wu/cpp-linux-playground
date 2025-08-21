@@ -43,14 +43,14 @@ int main(int argc, char* argv[]) {
     int pattern_arg_index = 1;
     int file_arg_index = 2;
 
-    // 解析命令行参数
+    // Parse command line arguments
     if (argc > 1 && std::string(argv[1]) == "-n") {
         show_line_numbers = true;
         pattern_arg_index = 2;
         file_arg_index = 3;
     }
 
-    // 检查参数数量
+    // Check argument count
     if (argc < (file_arg_index + 1)) {
         std::cerr << "Usage: " << argv[0] << " [-n] pattern file" << std::endl;
         return 1;
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     std::string pattern = argv[pattern_arg_index];
     std::filesystem::path filepath = argv[file_arg_index];
 
-    // 调用grep函数
+    // Call grep function
     bool success = grep_file(pattern, filepath, std::cout, show_line_numbers);
 
     return success ? 0 : 1;

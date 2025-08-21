@@ -30,27 +30,27 @@
 
 bool grep_file(const std::string& pattern, const std::filesystem::path& filepath, 
                std::ostream& out, bool show_line_numbers) {
-    // 检查文件是否存在
+    // Check if file exists
     if (!std::filesystem::exists(filepath)) {
         out << "Error: File does not exist: " << filepath << std::endl;
         return false;
     }
 
-    // 打开文件
+    // Open file
     std::ifstream file(filepath);
     if (!file.is_open()) {
         out << "Error: Could not open file: " << filepath << std::endl;
         return false;
     }
 
-    // 读取文件并搜索模式
+    // Read file and search for pattern
     std::string line;
     int line_number = 0;
 
     while (std::getline(file, line)) {
         line_number++;
 
-        // 检查行是否包含模式
+        // Check if line contains pattern
         if (line.find(pattern) != std::string::npos) {
             if (show_line_numbers) {
                 out << line_number << ":";
@@ -71,7 +71,7 @@ void grep_text(const std::string& pattern, const std::string& text,
     while (std::getline(stream, line)) {
         line_number++;
 
-        // 检查行是否包含模式
+        // Check if line contains pattern
         if (line.find(pattern) != std::string::npos) {
             if (show_line_numbers) {
                 out << line_number << ":";

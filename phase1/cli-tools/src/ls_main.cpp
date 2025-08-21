@@ -25,6 +25,13 @@
  *
  *   - List contents of a specific directory (e.g., 'phase1'):
  *     ./build/phase1/cli-tools/my_ls phase1
+ * 
+ * Debugging with VS Code Dev Container + CMake Tools:
+ *   1. Install the "Dev Containers" and "CMake Tools" extensions in VS Code.
+ *   2. Open the project in a Dev Container (VS Code will attach into Docker).
+ *   3. CMake Tools automatically configures the project (cmake -S . -B build).
+ *   4. Select the target (e.g., "my_ls") in the bottom status bar.
+ *   5. Press F5 to build and debug inside the container.
  */
 
 #include "ls.h"

@@ -260,6 +260,17 @@ WORKDIR /app
 ./scripts/docker-dev.sh clean
 ```
 
+### GitHub Actions 持续集成
+项目配置了 GitHub Actions 工作流，在每次推送到 `main` 分支或创建拉取请求时自动运行单元测试。
+
+工作流配置文件位于 `.github/workflows/ci.yml`，包含以下步骤：
+1. 在 Ubuntu 24.04 环境中设置构建环境
+2. 安装必要的依赖项（g++, cmake, build-essential等）
+3. 配置和构建项目
+4. 运行所有单元测试
+
+可以通过 GitHub 仓库的 "Actions" 标签页查看构建和测试结果。
+
 ### 手动编译运行
 ```bash
 # 从项目根目录

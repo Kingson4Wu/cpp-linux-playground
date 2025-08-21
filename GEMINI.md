@@ -285,3 +285,14 @@ cmake --build build -- -j
 3. CMake Tools 会自动配置项目 (cmake -S . -B build)
 4. 在底部状态栏选择目标 (如 "my_ls")
 5. 按 F5 构建并调试容器内程序
+
+### GitHub Actions 持续集成
+项目配置了 GitHub Actions 工作流，在每次推送到 `main` 分支或创建拉取请求时自动运行单元测试。
+
+工作流配置文件位于 `.github/workflows/ci.yml`，包含以下步骤：
+1. 在 Ubuntu 24.04 环境中设置构建环境
+2. 安装必要的依赖项（g++, cmake, build-essential等）
+3. 配置和构建项目
+4. 运行所有单元测试
+
+可以通过 GitHub 仓库的 "Actions" 标签页查看构建和测试结果。

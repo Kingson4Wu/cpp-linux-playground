@@ -34,11 +34,14 @@
 ## 重要约定
 - **编译标准：** `-std=c++20`
 - **构建目录：** `build/`
-- **源码目录：** `src/`
+- **源码目录：** 按阶段组织（如 `phase1/cli-tools/src/`）
 - **测试文件：** `*_test.cpp`
 - **头文件：** `include/` 目录
 - **CMake 配置：** 每个项目独立 CMakeLists.txt
-- **文档规范：** 每个可执行子项目的主源文件（如 `ls.cpp`）头部必须包含编译、运行和使用方法的注释说明。
+- **文档规范：** 
+  - 每个可执行子项目的主源文件头部必须包含编译、运行和使用方法的注释说明
+  - 每个库的实现文件也需要包含使用说明和运行方法
+  - 测试文件需要包含如何运行测试的说明
 
 ## 开发环境配置
 
@@ -47,7 +50,7 @@
 FROM ubuntu:24.04
 RUN apt update && apt install -y \
     g++ cmake git build-essential ninja-build \
-    libboost-all-dev libssl-dev gdb lldb
+    libboost-all-dev libssl-dev gdb lldb clang-format valgrind
 WORKDIR /app
 ```
 
@@ -75,6 +78,31 @@ WORKDIR /app
 2. 熟练使用 Linux 系统调用和工具链
 3. 能够编写高性能多线程网络服务
 4. 具备调试、性能分析和工程化能力
+
+## 代码规范
+
+### 文件组织
+- 每个子项目包含独立的 `src` 和 `include` 目录
+- 库实现放在 `src` 目录下
+- 头文件放在 `include` 目录下
+- 测试文件放在 `tests` 目录下，按项目阶段组织
+
+### 注释规范
+- 每个源文件头部必须包含文件说明和使用方法
+- 重要的函数需要添加注释说明功能和参数
+- 复杂的逻辑需要添加注释解释实现思路
+
+### CMake 规范
+- 根 CMakeLists.txt 管理所有子项目
+- 每个子项目包含独立的 CMakeLists.txt
+- 库使用 `add_library` 创建
+- 可执行文件使用 `add_executable` 创建
+- 使用 `target_link_libraries` 链接依赖
+
+### 测试规范
+- 使用 Google Test 进行单元测试
+- 每个测试文件需要包含如何运行测试的说明
+- 测试用例需要覆盖正常和异常情况
 
 ## 项目整体计划
 
@@ -121,7 +149,8 @@ WORKDIR /app
 │   │   ├── include/
 │   │   │   └── ls.h
 │   │   └── src/
-│   │       └── ls.cpp
+│   │       ├── ls_lib.cpp
+│   │       └── ls_main.cpp
 │   ├── json-parser/
 │   └── logger/
 ├── phase2/             # 阶段 2：系统编程
@@ -135,3 +164,47 @@ WORKDIR /app
 │           └── ls_test.cpp
 └── third_party/        # 第三方依赖库
 ```
+
+## 运行方式
+
+### 使用 Docker 开发脚本
+```bash
+# 构建 Docker 镜像
+./scripts/docker-dev.sh build
+
+# 启动容器
+./scripts/docker-dev.sh run
+
+# 进入容器
+./scripts/docker-dev.sh exec
+
+# 构建并运行 my_ls
+./scripts/docker-dev.sh run-ls
+
+# 运行测试
+./scripts/docker-dev.sh test
+
+# 调试测试
+./scripts/docker-dev.sh debug
+
+# 停止容器
+./scripts/docker-dev.sh stop
+
+# 清理容器和卷
+./scripts/docker-dev.sh clean
+```
+
+### 手动编译运行
+```bash
+# 从项目根目录
+cmake -S . -B build
+cmake --build build -- -j
+./build/phase1/cli-tools/my_ls [path]
+```
+
+### VSCode 开发容器
+1. 安装 "Dev Containers" 和 "CMake Tools" 插件
+2. 打开项目在开发容器中 (VS Code 会自动 attach 到 Docker)
+3. CMake Tools 会自动配置项目 (cmake -S . -B build)
+4. 在底部状态栏选择目标 (如 "my_ls")
+5. 按 F5 构建并调试容器内程序

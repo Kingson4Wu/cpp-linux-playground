@@ -17,11 +17,13 @@ case "$1" in
         ;;
     run-ls)
         echo "Building and running my_ls in Docker container..."
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && ./phase1/cli-tools/my_ls"
+        shift
+        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_ls $*"
         ;;
     run-grep)
         echo "Building and running my_grep in Docker container..."
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && ./phase1/cli-tools/my_grep"
+        shift
+        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_grep $*"
         ;;
     test)
         echo "Running tests in Docker container..."

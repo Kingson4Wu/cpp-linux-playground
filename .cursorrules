@@ -1,0 +1,119 @@
+# Cursor Rules for cpp-linux-playground
+
+## 项目概述
+这是一个面向有后端开发经验工程师的Linux C++实战练手项目合集，重点覆盖现代C++语法、系统编程、并发、多线程、网络编程、调试与工程化能力。
+
+## 技术栈要求
+- **语言标准**: C++20 (`-std=c++20`)
+- **平台**: Linux (Ubuntu 24.04 Docker容器)
+- **构建工具**: CMake (>= 3.20)
+- **调试工具**: GDB/LLDB, Valgrind, AddressSanitizer
+- **网络编程**: Socket API, epoll, Reactor模型
+
+## 代码规范
+
+### 文件组织
+- 按阶段组织代码：`phase1/`, `phase2/`, `phase3/`, `phase4/`
+- 每个子项目包含独立的`src/`和`include/`目录
+- 测试文件放在`tests/`目录下，按项目阶段组织
+- 头文件放在`include/`目录下
+
+### 命名规范
+- 类名：PascalCase (如 `JsonParser`, `Logger`)
+- 函数名：snake_case (如 `parse_json`, `write_log`)
+- 变量名：snake_case (如 `file_path`, `buffer_size`)
+- 常量：UPPER_SNAKE_CASE (如 `MAX_BUFFER_SIZE`, `DEFAULT_PORT`)
+- 文件名：snake_case (如 `json_parser.cpp`, `logger.h`)
+
+### 注释规范
+- **所有注释必须使用英文**
+- 每个源文件头部必须包含文件说明、编译方法、运行方法和使用说明
+- 重要的函数需要添加注释说明功能、参数和返回值
+- 复杂的逻辑需要添加注释解释实现思路
+- 使用Doxygen风格的注释格式
+
+### 代码风格
+- 使用4个空格缩进
+- 大括号使用Allman风格（新行）
+- 函数参数超过80字符时换行
+- 优先使用现代C++特性（智能指针、lambda、范围for等）
+
+## 开发规范
+
+### 提交规范
+- 使用英文编写提交信息
+- 遵循约定式提交格式：`<type>(<scope>): <subject>`
+- 类型包括：feat, fix, docs, style, refactor, perf, test, build, ci, chore
+- 范围标识模块：cli-tools, json-parser, logger等
+
+### 质量保证
+- 编写单元测试验证核心功能
+- 目标代码覆盖率 > 90%
+- 使用valgrind/AddressSanitizer检测内存安全
+- 重视性能优化和工程化
+
+### 依赖管理
+- 使用CMake管理构建和依赖
+- 第三方库放在`third_party/`目录
+- 优先使用系统标准库和STL
+
+## 项目阶段要求
+
+### 阶段1：语法与工具熟悉
+- 命令行工具集：实现ls/grep/wc简化版
+- JSON解析器：手写JSON解析，支持序列化/反序列化
+- 多线程日志库：多线程安全写日志，支持异步日志
+
+### 阶段2：系统编程与多线程
+- 多线程下载器：并发下载，支持断点续传
+- 进程管理工具：简化版ps/top
+- 内存池分配器：自定义内存分配器
+
+### 阶段3：网络编程
+- TCP多线程聊天室：多客户端消息收发
+- HTTP服务器：支持GET/POST，线程池
+- 文件传输服务器：大文件分块传输，断点续传
+
+### 阶段4：综合实战
+- mini-Redis：内存KV存储，持久化，epoll多路复用
+- mini-Search：倒排索引搜索引擎
+- 高并发爬虫：异步网络IO + 任务队列
+
+## 构建和测试
+
+### CMake规范
+- 根CMakeLists.txt管理所有子项目
+- 每个子项目包含独立的CMakeLists.txt
+- 库使用`add_library`创建
+- 可执行文件使用`add_executable`创建
+- 使用`target_link_libraries`链接依赖
+
+### 测试规范
+- 使用Google Test进行单元测试
+- 每个测试文件需要包含如何运行测试的说明
+- 测试用例需要覆盖正常和异常情况
+- 支持Docker容器内运行测试
+
+### Docker开发环境
+- 所有代码必须在Docker容器内编译和运行
+- 使用提供的docker-dev.sh脚本管理开发环境
+- 支持代码覆盖率生成和调试
+
+## 性能要求
+- 重视内存安全和性能优化
+- 使用内存池、零拷贝、锁优化等技术
+- 网络服务要求高并发和低延迟
+- 定期进行性能测试和优化
+
+## 文档要求
+- 每个可执行子项目的主源文件头部必须包含完整的使用说明
+- 每个库的实现文件需要包含使用说明和运行方法
+- 测试文件需要包含如何运行测试的说明
+- 重要功能需要编写README文档
+
+## 注意事项
+- 所有代码必须在Linux Docker容器内运行
+- 使用现代C++特性，避免C风格代码
+- 重视内存管理和资源释放
+- 代码必须通过所有测试用例
+- 遵循Linux系统编程最佳实践

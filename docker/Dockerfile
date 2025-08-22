@@ -17,6 +17,7 @@ RUN apt update && apt install -y \
     lldb \
     clang-format \
     valgrind \
+    libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory

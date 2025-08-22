@@ -8,6 +8,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add project subdirectories
 add_subdirectory(phase1)
 
+# Add phase2 subdirectory if it exists
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase2/CMakeLists.txt)
+    add_subdirectory(phase2)
+endif()
+
 # --- Testing ---
 # Enable testing
 enable_testing()

@@ -30,6 +30,11 @@ case "$1" in
         shift
         docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_wc $*"
         ;;
+    run-logger)
+        echo "Building and running logger_example in Docker container..."
+        shift
+        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/logger/logger_example $*"
+        ;;
     test)
         echo "Running tests in Docker container..."
         docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && ctest"

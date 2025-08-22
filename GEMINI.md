@@ -187,7 +187,7 @@ WORKDIR /app
     - [x] `grep`
     - [x] `wc`
   - [ ] JSON 解析器 (json-parser)
-  - [ ] 多线程日志库 (logger)
+  - [x] 多线程日志库 (logger)
 - [ ] **阶段 2：系统编程**
   - [ ] 多线程下载器 (downloader)
   - [ ] 进程管理工具 (proc-manager)

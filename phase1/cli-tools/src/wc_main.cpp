@@ -48,6 +48,19 @@
 #include <filesystem>
 #include <string>
 
+void print_usage(const char* program_name) {
+    std::cout << "Usage: " << program_name << " [-lwc] [file]
+"
+              << "  -l\tCount lines
+"
+              << "  -w\tCount words
+"
+              << "  -c\tCount characters
+"
+              << "  --help\tDisplay this help message
+";
+}
+
 int main(int argc, char* argv[]) {
     bool count_lines = false;
     bool count_words = false;
@@ -63,6 +76,9 @@ int main(int argc, char* argv[]) {
             count_words = true;
         } else if (arg == "-c") {
             count_chars = true;
+        } else if (arg == "--help") {
+            print_usage(argv[0]);
+            return 0;
         } else if (filepath.empty()) {
             filepath = arg;
         } else {

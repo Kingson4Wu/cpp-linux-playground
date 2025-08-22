@@ -13,6 +13,11 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase2/CMakeLists.txt)
     add_subdirectory(phase2)
 endif()
 
+# Add phase3 subdirectory if it exists
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase3/CMakeLists.txt)
+    add_subdirectory(phase3)
+endif()
+
 # --- Testing ---
 # Enable testing
 enable_testing()

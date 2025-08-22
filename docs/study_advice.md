@@ -4,4 +4,13 @@
 + `std::cout << "Hello, World!
 "`
 操作符<<(“输向”)把它的第二个参数写入第一个。 在本例中，字符串文本(string literal)"Hello, World!
-" 被写入到标准输出流std::cout上
+" 被写入到标准输出流std::cout上    
++ `cout << "the square of " << x << " is " << square(x) << "
+";`
+链式调用
+因为 << 返回的还是 ostream&（即 cout 自身的引用）
+等价于：
+```cpp
+cout << "the square of ";
+cout << x;
+```

@@ -4,3 +4,7 @@
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tcp-chat-room/CMakeLists.txt)
     add_subdirectory(tcp-chat-room)
 endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/http-server/CMakeLists.txt)
+    add_subdirectory(http-server)
+endif()

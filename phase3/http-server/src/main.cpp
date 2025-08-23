@@ -55,6 +55,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <cstring>
+#include <cerrno> // For errno and strerror
 
 // Global variable to store the server socket for signal handling
 static int server_socket = -1;
@@ -99,14 +100,14 @@ int main(int argc, char* argv[]) {
     // Create server socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket < 0) {
-        std::cerr << "Failed to create socket" << std::endl;
+        std::cerr << "Failed to create socket: " << strerror(errno) << std::endl;
         return 1;
     }
 
     // Allow reuse of address
     int opt = 1;
     if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-        std::cerr << "Failed to set socket options" << std::endl;
+        std::cerr << "Failed to set socket options: " << strerror(errno) << std::endl;
         close(server_socket);
         return 1;
     }
@@ -118,14 +119,14 @@ int main(int argc, char* argv[]) {
     server_addr.sin_port = htons(port);
 
     if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-        std::cerr << "Failed to bind socket" << std::endl;
+        std::cerr << "Failed to bind socket: " << strerror(errno) << std::endl;
         close(server_socket);
         return 1;
     }
 
     // Listen for incoming connections
     if (listen(server_socket, 10) < 0) {
-        std::cerr << "Failed to listen on socket" << std::endl;
+        std::cerr << "Failed to listen on socket: " << strerror(errno) << std::endl;
         close(server_socket);
         return 1;
     }
@@ -142,9 +143,12 @@ int main(int argc, char* argv[]) {
         if (client_socket < 0) {
             if (server_socket < 0) {
                 // Server was shut down
+                std::cout << "Server socket closed, exiting main loop." << std::endl;
                 break;
             }
-            std::cerr << "Failed to accept connection" << std::endl;
+            std::cerr << "Failed to accept connection: " << strerror(errno) << std::endl;
+            // If the error is not EINTR (interrupted by signal), we might want to break
+            // For now, we'll continue the loop
             continue;
         }
 

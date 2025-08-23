@@ -16,6 +16,7 @@ HttpConnectionHandler::HttpConnectionHandler(int client_socket, const std::strin
 HttpConnectionHandler::~HttpConnectionHandler() {
     if (client_socket_ >= 0) {
         close(client_socket_);
+        client_socket_ = -1; // Set to -1 to prevent accidental reuse
     }
 }
 
@@ -41,6 +42,9 @@ bool HttpConnectionHandler::ReadRequest(HttpRequest& request) {
     char buffer[4096];
     ssize_t bytes_received = recv(client_socket_, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received <= 0) {
+        if (bytes_received < 0) {
+            std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+        }
         return false;
     }
 
@@ -99,6 +103,9 @@ bool HttpConnectionHandler::SendResponse(const HttpResponse& response) {
         ssize_t bytes_sent = send(client_socket_, response_str.c_str() + total_bytes_sent, 
                                   total_bytes_to_send - total_bytes_sent, 0);
         if (bytes_sent <= 0) {
+            if (bytes_sent < 0) {
+                std::cerr << "Error sending data: " << strerror(errno) << std::endl;
+            }
             return false;
         }
         total_bytes_sent += bytes_sent;

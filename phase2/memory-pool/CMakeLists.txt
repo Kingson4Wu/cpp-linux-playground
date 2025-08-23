@@ -43,4 +43,4 @@ target_include_directories(memory_pool_demo PRIVATE
 # --- Tests ---
 
 # Add the tests subdirectory
-add_subdirectory(tests)
+# add_subdirectory(tests)  # Tests directory does not exist yet

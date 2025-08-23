@@ -56,4 +56,4 @@ target_include_directories(my_downloader PRIVATE
 # --- Tests ---
 
 # Add the tests subdirectory
-add_subdirectory(tests)
+# add_subdirectory(tests)  # Tests directory does not exist yet

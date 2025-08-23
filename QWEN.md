@@ -250,10 +250,10 @@ WORKDIR /app
 # 构建并运行 my_wc
 ./scripts/docker-dev.sh run-wc
 
-# 运行测试
+# 运行测试 (使用独立的 build-test 目录)
 ./scripts/docker-dev.sh test
 
-# 调试测试
+# 调试测试 (使用独立的 build 目录)
 ./scripts/docker-dev.sh debug
 
 # 停止容器
@@ -262,6 +262,12 @@ WORKDIR /app
 # 清理容器和卷
 ./scripts/docker-dev.sh clean
 ```
+
+**注意**: 为了提高开发效率，不同的任务使用了独立的构建目录：
+*   `run-*` 和 `debug` 命令使用 `build/` 目录。
+*   `test` 命令使用 `build-test/` 目录。
+*   `coverage` 命令使用 `build_coverage/` 目录。
+这样可以避免在不同任务之间切换时进行不必要的重新编译。
 
 ### GitHub Actions 持续集成
 项目配置了 GitHub Actions 工作流，在每次推送到 `main` 分支或创建拉取请求时自动运行单元测试。

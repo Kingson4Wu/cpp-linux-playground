@@ -54,3 +54,4 @@ docker-compose.override.yml
 
 # CMake presets (we want to track this file)
 !CMakePresets.json
+build-test/

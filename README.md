@@ -58,18 +58,9 @@ A hands-on C++ learning playground for Linux, covering system programming, netwo
 - **调试分析**：GDB / Valgrind / Perf / AddressSanitizer  
 - **网络**：Socket API / epoll / Reactor 模型
 
-## 🐳 Docker 开发环境
-
-为了确保代码在生产环境中的Linux系统上能够正常运行，我们提供了基于Docker的开发环境：
-
-- 一致的开发和测试环境
-- 模拟生产环境的Linux系统
-- 预配置的开发工具链
-
-### 使用方法
-
+### 使用 Docker 开发脚本
 ```bash
-# 构建Docker镜像
+# 构建 Docker 镜像
 ./scripts/docker-dev.sh build
 
 # 启动容器
@@ -78,21 +69,33 @@ A hands-on C++ learning playground for Linux, covering system programming, netwo
 # 进入容器
 ./scripts/docker-dev.sh exec
 
-# 运行测试
+# 构建并运行 my_ls
+./scripts/docker-dev.sh run-ls
+
+# 构建并运行 my_grep
+./scripts/docker-dev.sh run-grep
+
+# 构建并运行 my_wc
+./scripts/docker-dev.sh run-wc
+
+# 运行测试 (使用独立的 build-test 目录)
 ./scripts/docker-dev.sh test
 
-# 生成代码覆盖率报告
-./scripts/docker-dev.sh coverage
-
-# 在浏览器中打开代码覆盖率报告
-./scripts/docker-dev.sh open-coverage
-
-# 调试程序
+# 调试测试 (使用独立的 build 目录)
 ./scripts/docker-dev.sh debug
 
 # 停止容器
 ./scripts/docker-dev.sh stop
+
+# 清理容器和卷
+./scripts/docker-dev.sh clean
 ```
+
+**注意**: 为了提高开发效率，不同的任务使用了独立的构建目录：
+*   `run-*` 和 `debug` 命令使用 `build/` 目录。
+*   `test` 命令使用 `build-test/` 目录。
+*   `coverage` 命令使用 `build_coverage/` 目录。
+这样可以避免在不同任务之间切换时进行不必要的重新编译。
 
 ## 📊 代码覆盖率
 

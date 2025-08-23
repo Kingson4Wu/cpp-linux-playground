@@ -18,9 +18,8 @@ bool HttpRequest::Parse(const std::string& request_str) {
         return false; // Empty request
     }
 
-    // Remove trailing 
-    if (!line.empty() && line.back() == '
-') {
+    // Remove trailing \r
+    if (!line.empty() && line.back() == '\r') {
         line.pop_back();
     }
 
@@ -34,11 +33,9 @@ bool HttpRequest::Parse(const std::string& request_str) {
 
     // Parse headers
     headers_.clear();
-    while (std::getline(request_stream, line) && line != "
-") {
-        // Remove trailing 
-        if (!line.empty() && line.back() == '
-') {
+    while (std::getline(request_stream, line) && line != "\r") {
+        // Remove trailing \r
+        if (!line.empty() && line.back() == '\r') {
             line.pop_back();
         }
 

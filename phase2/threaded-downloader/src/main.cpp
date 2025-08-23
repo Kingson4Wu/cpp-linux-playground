@@ -5,19 +5,20 @@
  * This application allows users to download multiple files concurrently from the command line.
  * It uses libcurl for HTTP requests and C++ standard library threads for concurrency.
  *
- * How to Compile and Run with Docker:
- *   1. Build and run my_downloader in Docker container:
- *      ./scripts/docker-dev.sh exec
- *      mkdir -p build && cd build
- *      cmake ..
- *      make
- *      ./phase2/threaded-downloader/my_downloader [OPTIONS] <URL1> <URL2> ...
+ * How to Run with Docker (builds and runs automatically):
+ *   ./scripts/docker-dev.sh exec
+ *   # Inside the container, navigate to the build directory and run the example
+ *   cd build/phase2/threaded-downloader
+ *   ./my_downloader [OPTIONS] <URL1> <URL2> ...
  *
- *   2. Or, to build and run manually in Docker:
+ * How to Compile and Run manually in Docker:
+ *   1. Enter the Docker container:
  *      ./scripts/docker-dev.sh exec
+ *   2. Inside the container, create a build directory and compile:
  *      mkdir -p build && cd build
  *      cmake ..
  *      make
+ *   3. Run the executable:
  *      ./phase2/threaded-downloader/my_downloader [OPTIONS] <URL1> <URL2> ...
  *
  * How to Compile without Docker (from project root):

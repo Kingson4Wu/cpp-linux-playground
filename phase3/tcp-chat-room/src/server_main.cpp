@@ -6,19 +6,20 @@
  * that allows multiple clients to connect and exchange messages
  * in real-time. It uses a thread pool for efficient client handling.
  *
- * How to Compile and Run with Docker:
- *   1. Build and run chat_server in Docker container:
- *      ./scripts/docker-dev.sh exec
- *      mkdir -p build && cd build
- *      cmake ..
- *      make
- *      ./phase3/tcp-chat-room/chat_server [PORT]
+ * How to Run with Docker (builds and runs automatically):
+ *   ./scripts/docker-dev.sh exec
+ *   # Inside the container, navigate to the build directory and run the example
+ *   cd build/phase3/tcp-chat-room
+ *   ./chat_server [PORT]
  *
- *   2. Or, to build and run manually in Docker:
+ * How to Compile and Run manually in Docker:
+ *   1. Enter the Docker container:
  *      ./scripts/docker-dev.sh exec
+ *   2. Inside the container, create a build directory and compile:
  *      mkdir -p build && cd build
  *      cmake ..
  *      make
+ *   3. Run the executable:
  *      ./phase3/tcp-chat-room/chat_server [PORT]
  *
  * How to Compile without Docker (from project root):

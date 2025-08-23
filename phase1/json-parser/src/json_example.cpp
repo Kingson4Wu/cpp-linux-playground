@@ -3,18 +3,27 @@
  *
  * This file demonstrates how to use the JSON parser library.
  *
- * How to Compile with Docker:
- *   1. Build the project in Docker container:
+ * How to Run with Docker (builds and runs automatically):
+ *   ./scripts/docker-dev.sh exec
+ *   # Inside the container, navigate to the build directory and run the example
+ *   cd build/phase1/json-parser
+ *   ./json_example
+ *
+ * How to Compile and Run manually in Docker:
+ *   1. Enter the Docker container:
  *      ./scripts/docker-dev.sh exec
+ *   2. Inside the container, create a build directory and compile:
  *      mkdir -p build && cd build
  *      cmake ..
  *      make
+ *   3. Run the executable:
+ *      ./phase1/json-parser/json_example
  *
  * How to Compile without Docker (from project root):
  *   1. cmake -S . -B build
  *   2. cmake --build build -- -j
  *
- * How to Run:
+ * How to Run without Docker:
  *   ./build/phase1/json-parser/json_example
  *
  * Debugging with VS Code Dev Container + CMake Tools:

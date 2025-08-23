@@ -1,23 +1,25 @@
 /*
  * my_grep: A simplified version of the 'grep' command.
  *
- * How to Compile and Run with Docker:
- *   1. Build and run my_grep in Docker container:
- *      ./scripts/docker-dev.sh run-grep
+ * How to Run with Docker (builds and runs automatically):
+ *   ./scripts/docker-dev.sh run-grep [-n] pattern file
  *
- *   2. Or, to build and run manually in Docker:
+ * How to Compile and Run manually in Docker:
+ *   1. Enter the Docker container:
  *      ./scripts/docker-dev.sh exec
+ *   2. Inside the container, create a build directory and compile:
  *      mkdir -p build && cd build
  *      cmake ..
  *      make
- *      ./phase1/cli-tools/my_grep [pattern] [file]
+ *   3. Run the executable:
+ *      ./phase1/cli-tools/my_grep [-n] pattern file
  *
  * How to Compile without Docker (from project root):
  *   1. cmake -S . -B build
  *   2. cmake --build build -- -j
  *
  * How to Run without Docker:
- *   ./build/phase1/cli-tools/my_grep [pattern] [file]
+ *   ./build/phase1/cli-tools/my_grep [-n] pattern file
  *
  * Usage Examples:
  *   - Search for a pattern in a file:

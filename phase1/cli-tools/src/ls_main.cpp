@@ -1,15 +1,17 @@
 /*
  * my_ls: A simplified version of the 'ls' command.
  *
- * How to Compile and Run with Docker:
- *   1. Build and run my_ls in Docker container:
- *      ./scripts/docker-dev.sh run-ls
+ * How to Run with Docker (builds and runs automatically):
+ *   ./scripts/docker-dev.sh run-ls [path]
  *
- *   2. Or, to build and run manually in Docker:
+ * How to Compile and Run manually in Docker:
+ *   1. Enter the Docker container:
  *      ./scripts/docker-dev.sh exec
+ *   2. Inside the container, create a build directory and compile:
  *      mkdir -p build && cd build
  *      cmake ..
  *      make
+ *   3. Run the executable:
  *      ./phase1/cli-tools/my_ls [path]
  *
  * How to Compile without Docker (from project root):

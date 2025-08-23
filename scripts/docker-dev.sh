@@ -18,31 +18,31 @@ case "$1" in
     run-ls)
         echo "Building and running my_ls in Docker container..."
         shift
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_ls $*"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build && cd build && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Debug\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Debug .. && make && cd .. && ./build/phase1/cli-tools/my_ls $*"
         ;;
     run-grep)
         echo "Building and running my_grep in Docker container..."
         shift
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_grep $*"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build && cd build && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Debug\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Debug .. && make && cd .. && ./build/phase1/cli-tools/my_grep $*"
         ;;
     run-wc)
         echo "Building and running my_wc in Docker container..."
         shift
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/cli-tools/my_wc $*"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build && cd build && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Debug\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Debug .. && make && cd .. && ./build/phase1/cli-tools/my_wc $*"
         ;;
     run-logger)
         echo "Building and running logger_example in Docker container..."
         shift
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && cd .. && ./build/phase1/logger/logger_example $*"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build && cd build && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Debug\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Debug .. && make && cd .. && ./build/phase1/logger/logger_example $*"
         ;;
     test)
         echo "Running tests in Docker container..."
         echo "Test pass criteria: All tests must pass (100% pass rate) and exit code must be 0. See docs/test_pass_criteria.md for details."
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && ctest"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build-test && cd build-test && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Release\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Release .. && make && ctest"
         ;;
     debug)
         echo "Building and debugging ls_test in Docker container..."
-        docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && gdb ./tests/phase1/cli-tools/ls_test"
+        docker-compose run --rm cpp-dev bash -c "mkdir -p build && cd build && (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Debug\" CMakeCache.txt || find . -name CMakeCache.txt -delete) && cmake -DCMAKE_BUILD_TYPE=Debug .. && make && gdb ./tests/phase1/cli-tools/ls_test"
         ;;
     stop)
         echo "Stopping Docker container..."
@@ -56,10 +56,13 @@ case "$1" in
         echo "Generating code coverage report in Docker container..."
         docker-compose run --rm cpp-dev bash -c "
             # Create coverage build directory
-            rm -rf build_coverage && mkdir -p build_coverage && cd build_coverage &&
+            mkdir -p build_coverage && cd build_coverage &&
 
-            # Configure CMake with coverage enabled
-            cmake -DENABLE_COVERAGE=ON .. &&
+            # Check and clean CMake cache if build type is not Coverage
+            (test ! -f CMakeCache.txt || grep -q \"CMAKE_BUILD_TYPE:STRING=Coverage\" CMakeCache.txt || find . -name CMakeCache.txt -delete) &&
+
+            # Configure CMake with coverage enabled and set build type
+            cmake -DENABLE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Coverage .. &&
 
             # Build the project
             make -j\$(nproc) &&

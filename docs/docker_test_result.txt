@@ -1,0 +1,73 @@
+明白了，你的情况是这样的：
+
+* 项目是 **Linux C++**，你在 **Mac** 上开发。
+* 通过 **Docker** 模拟 Linux 环境来运行编译和单元测试。
+* 你有一个 **终端 AI 工具**（在 Mac 上）需要判断单元测试是否执行成功，但它无法直接识别 Docker 内的执行结果。
+
+这类问题本质上是 **AI 工具运行在宿主 Mac 上，而测试运行在 Docker 容器内**，所以工具无法“看到”容器里的状态、输出或文件。
+
+我给你整理几种可行方案：
+
+---
+
+### **方案 1：同步测试结果到宿主机**
+
+* 在 Docker 容器里执行单元测试时，将测试结果输出到 **宿主机可访问的目录**。
+* 操作方法：
+
+  1. 在 `docker run` 或 `docker-compose` 中挂载宿主目录：
+
+     ```bash
+     docker run -v /Users/你/项目/test_results:/app/test_results my_image
+     ```
+  2. 单元测试执行时，把报告（比如 **JUnit XML** 或 **.txt**）输出到 `/app/test_results`。
+  3. AI 工具在 Mac 上读取 `/Users/你/项目/test_results` 里的文件，判断测试是否成功。
+* 优点：简单、直观。
+* 缺点：需要修改测试命令，让它生成报告文件。
+
+---
+
+### **方案 2：直接让 AI 工具调用 Docker 命令**
+
+* 让 AI 工具在终端执行类似：
+
+  ```bash
+  docker exec my_container make test
+  ```
+* 然后读取 Docker 内测试输出。
+* 优点：不需要额外文件同步。
+* 缺点：AI 工具必须支持执行 shell 命令或解析 Docker 输出。
+
+---
+
+### **方案 3：通过 CI / 脚本中转**
+
+* 写一个 **shell 脚本**：
+
+  1. 在 Docker 内跑测试
+  2. 输出结果到宿主文件
+  3. 返回状态码给 Mac
+* AI 工具只需要调用这个脚本即可。
+* 示例：
+
+  ```bash
+  # run_tests.sh
+  docker run --rm -v $(pwd)/test_results:/app/test_results my_image bash -c "make test > /app/test_results/output.txt"
+  if grep -q 'FAILED' test_results/output.txt; then
+      exit 1
+  fi
+  exit 0
+  ```
+
+---
+
+### **方案 4：日志或状态 API**
+
+* 如果测试框架支持，可以在 Docker 内启动一个小 HTTP 服务，AI 工具访问 `/status` 获取测试结果。
+* 适合复杂项目或者未来做自动化集成，但开发成本高。
+
+---
+
+✅ **我建议**：先用 **方案 1** 或 **方案 3**，最简单，兼容现有工具，不用改 AI 工具太多。
+
+---

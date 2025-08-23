@@ -37,6 +37,7 @@ case "$1" in
         ;;
     test)
         echo "Running tests in Docker container..."
+        echo "Test pass criteria: All tests must pass (100% pass rate) and exit code must be 0. See docs/test_pass_criteria.md for details."
         docker-compose run --rm cpp-dev bash -c "find . -name CMakeCache.txt -delete && rm -rf build/* && mkdir -p build && cd build && cmake .. && make && ctest"
         ;;
     debug)

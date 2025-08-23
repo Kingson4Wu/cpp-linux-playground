@@ -12,25 +12,47 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # --- Library ---
 
-# Add the chat room library (if needed)
-# For now, we'll put common code in the executables themselves
-# If we need a library later, we can create one
+# Create a library for the chat server
+add_library(chat_server_lib
+    src/chat_server.cpp
+    src/chat_session.cpp
+    src/thread_pool.cpp
+)
+
+# Create a library for the chat client
+add_library(chat_client_lib
+    src/chat_client.cpp
+)
+
+# Specify include directories for the libraries
+target_include_directories(chat_server_lib PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_include_directories(chat_client_lib PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Link libraries for the libraries
+find_package(Threads REQUIRED)
+target_link_libraries(chat_server_lib PUBLIC Threads::Threads)
+target_link_libraries(chat_client_lib PUBLIC Threads::Threads)
 
 # --- Executables ---
 
 # Add the chat server executable
 add_executable(chat_server
     src/server_main.cpp
-    src/chat_server.cpp
-    src/chat_session.cpp  # Add chat_session.cpp
-    src/thread_pool.cpp
 )
 
 # Add the chat client executable
 add_executable(chat_client
     src/client_main.cpp
-    src/chat_client.cpp
 )
+
+# Link the libraries to the executables
+target_link_libraries(chat_server PRIVATE chat_server_lib)
+target_link_libraries(chat_client PRIVATE chat_client_lib)
 
 # Specify include directories for the executables
 target_include_directories(chat_server PRIVATE
@@ -40,16 +62,3 @@ target_include_directories(chat_server PRIVATE
 target_include_directories(chat_client PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-
-# Link libraries
-# For networking, we might need to link against system libraries
-# On Unix-like systems, this is usually not necessary as socket functions are in libc
-# But we might need to link against pthread for threading
-find_package(Threads REQUIRED)
-target_link_libraries(chat_server PRIVATE Threads::Threads)
-target_link_libraries(chat_client PRIVATE Threads::Threads)
-
-# --- Tests ---
-
-# Add the tests subdirectory
-# add_subdirectory(tests)

@@ -40,6 +40,10 @@ TEST(UtilsTest, GetFileNameFromUrl) {
     EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("http://example.com/"), "index.html");
     EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("http://example.com"), "index.html");
     EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("http://example.com/path/"), "index.html");
+    // Additional test case that was failing
+    EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("https://example.com"), "index.html");
+    EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("https://example.com/"), "index.html");
+    EXPECT_EQ(threaded_downloader::utils::GetFileNameFromUrl("https://example.com/path/to/resource"), "resource");
 }
 
 TEST(UtilsTest, CreateDirectories) {

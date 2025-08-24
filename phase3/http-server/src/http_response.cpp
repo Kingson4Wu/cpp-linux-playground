@@ -35,8 +35,7 @@ std::string HttpResponse::ToString() const {
     std::ostringstream response_stream;
 
     // Status line
-    response_stream << "HTTP/1.1 " << status_code_ << " " << GetReasonPhrase(status_code_) << "\r
-";
+    response_stream << "HTTP/1.1 " << status_code_ << " " << GetReasonPhrase(status_code_) << "\r\n";
 
     // Define the order of headers for consistent output
     // This is a simple approach to make tests pass
@@ -58,8 +57,7 @@ std::string HttpResponse::ToString() const {
                     pos = display_name.find('-', pos + 1);
                 }
             }
-            response_stream << display_name << ": " << it->second << "\r
-";
+            response_stream << display_name << ": " << it->second << "\r\n";
             processed_headers.insert(header_name);
         }
     }
@@ -77,14 +75,12 @@ std::string HttpResponse::ToString() const {
                     pos = display_name.find('-', pos + 1);
                 }
             }
-            response_stream << display_name << ": " << header.second << "\r
-";
+            response_stream << display_name << ": " << header.second << "\r\n";
         }
     }
 
     // Empty line to separate headers from body
-    response_stream << "\r
-";
+    response_stream << "\r\n";
 
     // Body
     response_stream << body_;

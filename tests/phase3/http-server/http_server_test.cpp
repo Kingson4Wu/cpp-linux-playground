@@ -1,9 +1,9 @@
 /**
  * @file http_server_test.cpp
- * @brief Unit tests for the HTTP server using Google Test.
+ * @brief Unit tests for the HTTP server library using Google Test.
  *
- * These tests cover the core functionality of the HttpRequest, HttpResponse, 
- * and HttpConnectionHandler classes.
+ * These tests cover the core functionality of the HTTP server library,
+ * including request parsing, response generation, and connection handling.
  */
 
 #include "http_request.h"
@@ -12,6 +12,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <string>
+#include <sstream>
 
 // Test fixture for HttpRequest tests
 class HttpRequestTest : public ::testing::Test {
@@ -25,24 +26,13 @@ protected:
     }
 };
 
-// Test to verify that HttpRequest can be instantiated
-TEST_F(HttpRequestTest, CanCreateRequest) {
-    EXPECT_NO_THROW({
-        http_server::HttpRequest request;
-    });
-}
-
 // Test to verify that HttpRequest can parse a simple GET request
 TEST_F(HttpRequestTest, CanParseSimpleGetRequest) {
     http_server::HttpRequest request;
-    std::string request_str = "GET /index.html HTTP/1.1\r
-"
-                              "Host: localhost\r
-"
-                              "Connection: close\r
-"
-                              "\r
-";
+    std::string request_str = "GET /index.html HTTP/1.1\r\n"
+                              "Host: localhost\r\n"
+                              "Connection: close\r\n"
+                              "\r\n";
 
     EXPECT_TRUE(request.Parse(request_str));
     EXPECT_EQ(request.GetMethod(), "GET");
@@ -56,14 +46,10 @@ TEST_F(HttpRequestTest, CanParseSimpleGetRequest) {
 // Test to verify that HttpRequest can parse a request with a body
 TEST_F(HttpRequestTest, CanParseRequestWithBody) {
     http_server::HttpRequest request;
-    std::string request_str = "POST /submit HTTP/1.1\r
-"
-                              "Host: localhost\r
-"
-                              "Content-Length: 11\r
-"
-                              "\r
-"
+    std::string request_str = "POST /submit HTTP/1.1\r\n"
+                              "Host: localhost\r\n"
+                              "Content-Length: 11\r\n"
+                              "\r\n"
                               "Hello World";
 
     EXPECT_TRUE(request.Parse(request_str));
@@ -87,14 +73,11 @@ protected:
     }
 };
 
-// Test to verify that HttpResponse can be instantiated
+// Test to verify that HttpResponse can be created
 TEST_F(HttpResponseTest, CanCreateResponse) {
-    EXPECT_NO_THROW({
-        http_server::HttpResponse response;
-    });
-    EXPECT_NO_THROW({
-        http_server::HttpResponse response(404);
-    });
+    http_server::HttpResponse response(200);
+    EXPECT_EQ(response.GetStatusCode(), 200);
+    EXPECT_EQ(response.GetHeader("Connection"), "close");
 }
 
 // Test to verify that HttpResponse can be converted to a string
@@ -103,14 +86,10 @@ TEST_F(HttpResponseTest, CanConvertToString) {
     response.SetHeader("Content-Type", "text/html");
     response.SetBody("<html><body><h1>Hello, World!</h1></body></html>");
 
-    std::string expected = "HTTP/1.1 200 OK\r
-"
-                           "Connection: close\r
-"
-                           "Content-Type: text/html\r
-"
-                           "\r
-"
+    std::string expected = "HTTP/1.1 200 OK\r\n"
+                           "Connection: close\r\n"
+                           "Content-Type: text/html\r\n"
+                           "\r\n"
                            "<html><body><h1>Hello, World!</h1></body></html>";
 
     EXPECT_EQ(response.ToString(), expected);
@@ -135,4 +114,9 @@ TEST_F(HttpConnectionHandlerTest, CanCreateHandler) {
     EXPECT_NO_THROW({
         http_server::HttpConnectionHandler handler(-1, ".");
     });
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

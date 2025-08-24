@@ -17,15 +17,12 @@ add_library(http_server_lib
     src/http_request.cpp
     src/http_response.cpp
     src/http_connection_handler.cpp
-    # Include thread_pool.cpp if we need to copy it or link to the existing one
-    # For now, we'll assume we can link to the existing chat_server_lib which contains ThreadPool
+    src/thread_pool.cpp
 )
 
 # Specify include directories for the library
 target_include_directories(http_server_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    # Include ThreadPool's header if needed
-    ${CMAKE_CURRENT_SOURCE_DIR}/../tcp-chat-room/include
 )
 
 # Link libraries for the library
@@ -46,6 +43,3 @@ target_link_libraries(http_server PRIVATE http_server_lib)
 target_include_directories(http_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-
-# Link to chat_server_lib to use ThreadPool
-target_link_libraries(http_server PRIVATE chat_server_lib)

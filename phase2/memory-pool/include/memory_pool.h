@@ -71,6 +71,13 @@ private:
     size_t used_size_;           ///< Used size of the memory pool
     void* memory_pool_;          ///< Pointer to the allocated memory pool
     std::map<size_t, void*> free_blocks_; ///< Map of free blocks by size
+
+    /**
+     * @brief Coalesces adjacent free blocks.
+     * 
+     * This function merges adjacent free blocks to reduce fragmentation.
+     */
+    void CoalesceBlocks();
 };
 
 } // namespace memory_pool

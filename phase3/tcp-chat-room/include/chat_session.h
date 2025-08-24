@@ -3,7 +3,10 @@
 
 #include <string>
 #include <memory>
-#include <thread> // Add this include
+#include <thread>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
 
 namespace chat_room {
 
@@ -87,6 +90,14 @@ public:
      * reads messages from the client socket.
      */
     void ReceiveMessages();
+    
+    /**
+     * @brief Sends messages from the queue to the client.
+     * 
+     * This method runs in a separate thread and continuously
+     * sends messages from the send queue to the client.
+     */
+    void SendMessages();
 
 private:
     int id_;                    ///< Unique identifier for this session
@@ -95,12 +106,12 @@ private:
     bool running_;              ///< Flag to indicate if the session is running
 
     std::thread receive_thread_; ///< Thread for receiving messages from the client
-    std::thread send_thread_;    ///< Thread for sending messages to the client (if needed)
+    std::thread send_thread_;    ///< Thread for sending messages to the client
 
-    // Queue for outgoing messages (if needed)
-    // std::queue<std::string> send_queue_;
-    // std::mutex send_queue_mutex_;
-    // std::condition_variable send_condition_;
+    // Queue for outgoing messages
+    std::queue<std::string> send_queue_;
+    std::mutex send_queue_mutex_;
+    std::condition_variable send_condition_;
 };
 
 } // namespace chat_room

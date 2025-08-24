@@ -21,6 +21,9 @@ struct ProcessInfo {
     int priority;           ///< Process priority
     int nice;               ///< Nice value
     long long start_time;   ///< Start time since boot
+    long long utime;        ///< User time
+    long long stime;        ///< System time
+    std::chrono::steady_clock::time_point last_update; ///< Time of last update
 };
 
 /**

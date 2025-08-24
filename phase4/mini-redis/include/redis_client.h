@@ -19,8 +19,9 @@ class RedisClient {
 public:
     /**
      * @brief Construct a new Redis Client object
+     * @param timeout_seconds The timeout for network operations in seconds
      */
-    RedisClient();
+    RedisClient(int timeout_seconds = 30);
 
     /**
      * @brief Destroy the Redis Client object
@@ -82,6 +83,7 @@ public:
 private:
     int client_socket_;
     Protocol protocol_;
+    int timeout_seconds_;
 
     /**
      * @brief Send raw data to the server

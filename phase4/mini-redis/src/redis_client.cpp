@@ -6,10 +6,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <cerrno>
+#include <sys/select.h>
+#include <sys/time.h>
 
 namespace redis {
 
-RedisClient::RedisClient() : client_socket_(-1) {}
+RedisClient::RedisClient(int timeout_seconds) : client_socket_(-1), timeout_seconds_(timeout_seconds) {}
 
 RedisClient::~RedisClient() {
     Disconnect();
@@ -191,19 +193,182 @@ bool RedisClient::SendData(const std::string& data) {
 }
 
 std::string RedisClient::ReceiveData() {
-    // For simplicity, we'll read up to 1024 bytes
-    // A full implementation would need to handle variable-length responses
-    char buffer[1024];
-    ssize_t bytes_received = recv(client_socket_, buffer, sizeof(buffer) - 1, 0);
-    if (bytes_received <= 0) {
-        if (bytes_received < 0) {
-            std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+    // Use select for timeout
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(client_socket_, &read_fds);
+    
+    struct timeval timeout;
+    timeout.tv_sec = timeout_seconds_;
+    timeout.tv_usec = 0;
+    
+    int select_result = select(client_socket_ + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while receiving data" << std::endl;
         }
         return "";
     }
-
-    buffer[bytes_received] = '\0';
-    return std::string(buffer, bytes_received);
+    
+    // First, read the first byte to determine the type of RESP value
+    char first_byte;
+    ssize_t bytes_received = recv(client_socket_, &first_byte, 1, 0);
+    if (bytes_received <= 0) {
+        if (bytes_received < 0) {
+            std::cerr << "Error receiving first byte: " << strerror(errno) << std::endl;
+        }
+        return "";
+    }
+    
+    std::string response;
+    response += first_byte;
+    
+    // Based on the first byte, determine how much more data to read
+    switch (first_byte) {
+        case '+': // Simple string
+        case '-': // Error
+        case ':': // Integer
+            // Read until we get \r\n
+            while (true) {
+                char c;
+                bytes_received = recv(client_socket_, &c, 1, 0);
+                if (bytes_received <= 0) {
+                    if (bytes_received < 0) {
+                        std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+                    }
+                    return "";
+                }
+                
+                response += c;
+                
+                // Check if we have \r\n at the end
+                if (response.length() >= 2 && 
+                    response[response.length()-2] == '\r' && 
+                    response[response.length()-1] == '\n') {
+                    break;
+                }
+            }
+            break;
+            
+        case '$': // Bulk string
+            {
+                // Read the length line
+                std::string length_line;
+                bool found_end = false;
+                while (!found_end) {
+                    char c;
+                    bytes_received = recv(client_socket_, &c, 1, 0);
+                    if (bytes_received <= 0) {
+                        if (bytes_received < 0) {
+                            std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+                        }
+                        return "";
+                    }
+                    
+                    length_line += c;
+                    
+                    // Check if we have \r\n at the end
+                    if (length_line.length() >= 2 && 
+                        length_line[length_line.length()-2] == '\r' && 
+                        length_line[length_line.length()-1] == '\n') {
+                        found_end = true;
+                    }
+                }
+                
+                response += length_line;
+                
+                // Parse the length
+                try {
+                    std::string length_str = length_line.substr(0, length_line.length()-2); // Remove \r\n
+                    long long length = std::stoll(length_str);
+                    
+                    // Handle null bulk string
+                    if (length == -1) {
+                        // Nothing more to read
+                        break;
+                    }
+                    
+                    // Read the data plus \r\n
+                    for (long long i = 0; i < length + 2; ++i) {
+                        char c;
+                        bytes_received = recv(client_socket_, &c, 1, 0);
+                        if (bytes_received <= 0) {
+                            if (bytes_received < 0) {
+                                std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+                            }
+                            return "";
+                        }
+                        
+                        response += c;
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Error parsing bulk string length: " << e.what() << std::endl;
+                    return "";
+                }
+            }
+            break;
+            
+        case '*': // Array
+            {
+                // Read the length line
+                std::string length_line;
+                bool found_end = false;
+                while (!found_end) {
+                    char c;
+                    bytes_received = recv(client_socket_, &c, 1, 0);
+                    if (bytes_received <= 0) {
+                        if (bytes_received < 0) {
+                            std::cerr << "Error receiving data: " << strerror(errno) << std::endl;
+                        }
+                        return "";
+                    }
+                    
+                    length_line += c;
+                    
+                    // Check if we have \r\n at the end
+                    if (length_line.length() >= 2 && 
+                        length_line[length_line.length()-2] == '\r' && 
+                        length_line[length_line.length()-1] == '\n') {
+                        found_end = true;
+                    }
+                }
+                
+                response += length_line;
+                
+                // Parse the length
+                try {
+                    std::string length_str = length_line.substr(0, length_line.length()-2); // Remove \r\n
+                    long long length = std::stoll(length_str);
+                    
+                    // Handle null array
+                    if (length == -1) {
+                        // Nothing more to read
+                        break;
+                    }
+                    
+                    // For each element in the array, recursively call ReceiveData
+                    for (long long i = 0; i < length; ++i) {
+                        std::string element = ReceiveData();
+                        if (element.empty()) {
+                            return "";
+                        }
+                        response += element;
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Error parsing array length: " << e.what() << std::endl;
+                    return "";
+                }
+            }
+            break;
+            
+        default:
+            std::cerr << "Unknown RESP type: " << first_byte << std::endl;
+            return "";
+    }
+    
+    return response;
 }
 
 } // namespace redis

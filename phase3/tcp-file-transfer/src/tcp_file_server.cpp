@@ -14,8 +14,8 @@
 
 namespace tcp_file_transfer {
 
-TcpFileServer::TcpFileServer(int port, const std::string& file_storage_path)
-    : port_(port), file_storage_path_(file_storage_path), stop_(false), server_socket_(-1), thread_pool_(4) {
+TcpFileServer::TcpFileServer(int port, const std::string& file_storage_path, int timeout_seconds)
+    : port_(port), file_storage_path_(file_storage_path), stop_(false), server_socket_(-1), thread_pool_(4), timeout_seconds_(timeout_seconds) {
     // Create the file storage directory if it doesn't exist
     std::filesystem::create_directories(file_storage_path_);
 }
@@ -116,6 +116,25 @@ void TcpFileServer::HandleClient(int client_socket) {
 }
 
 void TcpFileServer::ProcessMessage(int client_socket) {
+    // Set up timeout using select
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(client_socket, &read_fds);
+    
+    struct timeval timeout;
+    timeout.tv_sec = timeout_seconds_;
+    timeout.tv_usec = 0;
+    
+    int select_result = select(client_socket + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while receiving message header" << std::endl;
+        }
+        return;
+    }
+    
     // Read the message header (type and length)
     uint32_t header[2];
     ssize_t bytes_received = recv(client_socket, header, sizeof(header), 0);
@@ -138,6 +157,17 @@ void TcpFileServer::ProcessMessage(int client_socket) {
     if (length > MAX_FILE_SIZE + 1024) { // Adding some buffer for filename
         std::cerr << "Message too large: " << length << " bytes" << std::endl;
         SendResponse(client_socket, MSG_TYPE_ERROR, "", {'M', 'e', 's', 's', 'a', 'g', 'e', ' ', 't', 'o', 'o', ' ', 'l', 'a', 'r', 'g', 'e'});
+        return;
+    }
+
+    // Set up timeout for reading the rest of the message
+    select_result = select(client_socket + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while receiving message data" << std::endl;
+        }
         return;
     }
 

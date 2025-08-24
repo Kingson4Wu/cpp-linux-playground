@@ -34,6 +34,8 @@
  * Options:
  *   -j, --jobs N       Number of concurrent downloads (default: 4)
  *   -o, --output DIR   Output directory for downloaded files (default: current directory)
+ *   -r, --resume       Resume partial downloads (default: false)
+ *   -l, --limit-rate   Limit download speed in bytes per second (default: no limit)
  *   -h, --help         Show this help message
  *
  * Examples:
@@ -64,37 +66,36 @@
 
 // Function to print help message
 void PrintHelp(const char* prog_name) {
-    std::cout << "Usage: " << prog_name << " [OPTIONS] <URL1> <URL2> ...
-"
-              << "Download files from URLs concurrently.
-
-"
-              << "Options:
-"
-              << "  -j, --jobs N       Number of concurrent downloads (default: 4)
-"
-              << "  -o, --output DIR   Output directory for downloaded files (default: current directory)
-"
-              << "  -h, --help         Show this help message
-";
+    std::cout << "Usage: " << prog_name << " [OPTIONS] <URL1> <URL2> ...\n"
+              << "Download files from URLs concurrently.\n\n"
+              << "Options:\n"
+              << "  -j, --jobs N       Number of concurrent downloads (default: 4)\n"
+              << "  -o, --output DIR   Output directory for downloaded files (default: current directory)\n"
+              << "  -r, --resume       Resume partial downloads (default: false)\n"
+              << "  -l, --limit-rate   Limit download speed in bytes per second (default: no limit)\n"
+              << "  -h, --help         Show this help message\n";
 }
 
 int main(int argc, char* argv[]) {
     // Default values
     size_t max_concurrent_downloads = 4;
     std::filesystem::path output_dir = "."; // Current directory
+    bool resume = false;
+    long speed_limit = 0; // No limit
 
     // Define long options
     static struct option long_options[] = {
         {"jobs", required_argument, 0, 'j'},
         {"output", required_argument, 0, 'o'},
+        {"resume", no_argument, 0, 'r'},
+        {"limit-rate", required_argument, 0, 'l'},
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0}
     };
 
     int opt;
     int option_index = 0;
-    while ((opt = getopt_long(argc, argv, "j:o:h", long_options, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "j:o:rl:h", long_options, &option_index)) != -1) {
         switch (opt) {
             case 'j':
                 try {
@@ -120,6 +121,21 @@ int main(int argc, char* argv[]) {
                     return 1;
                 }
                 break;
+            case 'r':
+                resume = true;
+                break;
+            case 'l':
+                try {
+                    speed_limit = std::stol(optarg);
+                    if (speed_limit < 0) {
+                        std::cerr << "Error: Speed limit must be non-negative." << std::endl;
+                        return 1;
+                    }
+                } catch (const std::exception&) {
+                    std::cerr << "Error: Invalid speed limit specified." << std::endl;
+                    return 1;
+                }
+                break;
             case 'h':
                 PrintHelp(argv[0]);
                 return 0;
@@ -136,8 +152,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (urls.empty()) {
-        std::cerr << "Error: No URLs provided.
-";
+        std::cerr << "Error: No URLs provided.\n";
         PrintHelp(argv[0]);
         return 1;
     }
@@ -146,7 +161,7 @@ int main(int argc, char* argv[]) {
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
     // Create DownloadManager
-    threaded_downloader::DownloadManager manager(max_concurrent_downloads);
+    threaded_downloader::DownloadManager manager(max_concurrent_downloads, resume, speed_limit);
 
     // Add download tasks
     for (const auto& url : urls) {

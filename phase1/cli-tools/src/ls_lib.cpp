@@ -28,16 +28,17 @@
 #include <algorithm>
 #include <stdexcept>
 
-void list_directory(const std::filesystem::path& path, std::ostream& out) {
+bool list_directory(const std::filesystem::path& path, std::ostream& out) {
     try {
         if (!std::filesystem::exists(path)) {
-            throw std::runtime_error("Error: Path does not exist.");
+            out << "Error: Path does not exist." << std::endl;
+            return false;
         }
 
         if (!std::filesystem::is_directory(path)) {
             // If it's a file, just print its name
             out << path.filename().string() << std::endl;
-            return;
+            return true;
         }
 
         std::vector<std::string> entries;
@@ -51,9 +52,11 @@ void list_directory(const std::filesystem::path& path, std::ostream& out) {
             out << entry_name << std::endl;
         }
 
+        return true;
     } catch (const std::exception& e) {
         // In a real-world scenario, we might want to output errors to std::cerr
         // but for testability of this function's output, we'll send it to the stream.
-        out << e.what() << std::endl;
+        out << "Error: " << e.what() << std::endl;
+        return false;
     }
 }

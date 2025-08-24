@@ -51,6 +51,48 @@ void* MemoryPool::Allocate(size_t size) {
     return block_ptr;
 }
 
+// Helper function to coalesce adjacent free blocks
+void MemoryPool::CoalesceBlocks() {
+    if (free_blocks_.empty()) {
+        return;
+    }
+
+    // Create a new map to store coalesced blocks
+    std::map<size_t, void*> coalesced_blocks;
+    
+    // Sort free blocks by address
+    std::vector<std::pair<void*, size_t>> sorted_blocks;
+    for (const auto& pair : free_blocks_) {
+        sorted_blocks.push_back({pair.second, pair.first});
+    }
+    std::sort(sorted_blocks.begin(), sorted_blocks.end());
+    
+    // Coalesce adjacent blocks
+    auto it = sorted_blocks.begin();
+    while (it != sorted_blocks.end()) {
+        void* current_ptr = it->first;
+        size_t current_size = it->second;
+        
+        // Check if next block is adjacent
+        auto next_it = std::next(it);
+        while (next_it != sorted_blocks.end() && 
+               static_cast<char*>(current_ptr) + current_size == next_it->first) {
+            // Merge with next block
+            current_size += next_it->second;
+            ++next_it;
+        }
+        
+        // Add coalesced block to new map
+        coalesced_blocks[current_size] = current_ptr;
+        
+        // Move to next unprocessed block
+        it = next_it;
+    }
+    
+    // Replace free_blocks_ with coalesced_blocks
+    free_blocks_ = std::move(coalesced_blocks);
+}
+
 void MemoryPool::Deallocate(void* ptr, size_t size) {
     if (!ptr || size == 0) {
         return;
@@ -70,9 +112,8 @@ void MemoryPool::Deallocate(void* ptr, size_t size) {
     free_blocks_[size] = ptr;
     used_size_ -= size;
 
-    // Coalesce adjacent free blocks (simplified)
-    // This is a basic implementation and might not handle all cases
-    // A more sophisticated implementation would be needed for production use
+    // Coalesce adjacent free blocks
+    CoalesceBlocks();
 }
 
 } // namespace memory_pool

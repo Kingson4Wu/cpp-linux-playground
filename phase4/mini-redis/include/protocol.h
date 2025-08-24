@@ -24,8 +24,7 @@ struct RESPValue {
     virtual ~RESPValue() = default;
 };
 
-// Simple string: +OK\r
-
+// Simple string: +OK\r\n
 struct SimpleString : RESPValue {
     std::string value;
 
@@ -34,8 +33,7 @@ struct SimpleString : RESPValue {
     }
 };
 
-// Error: -Error message\r
-
+// Error: -Error message\r\n
 struct Error : RESPValue {
     std::string message;
 
@@ -44,8 +42,7 @@ struct Error : RESPValue {
     }
 };
 
-// Integer: :1000\r
-
+// Integer: :1000\r\n
 struct Integer : RESPValue {
     long long value;
 
@@ -54,10 +51,7 @@ struct Integer : RESPValue {
     }
 };
 
-// Bulk string: $5\r
-hello\r
- or $-1\r
- (null)
+// Bulk string: $5\r\nhello\r\n or $-1\r\n (null)
 struct BulkString : RESPValue {
     std::optional<std::string> value;
 
@@ -70,21 +64,25 @@ struct BulkString : RESPValue {
     }
 };
 
-// Array: *2\r
-$5\r
-hello\r
-$5\r
-world\r
-
+// Array: *2\r\n$5\r\nhello\r\n$5\r\nworld\r\n
 struct Array : RESPValue {
     std::vector<std::unique_ptr<RESPValue>> elements;
+    bool is_null;
 
-    Array() {
+    Array() : is_null(false) {
         type = RESPType::ARRAY;
     }
 
     void AddElement(std::unique_ptr<RESPValue> element) {
         elements.push_back(std::move(element));
+    }
+
+    bool IsNull() const {
+        return is_null;
+    }
+
+    void SetNull(bool null = true) {
+        is_null = null;
     }
 };
 

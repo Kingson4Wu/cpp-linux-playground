@@ -13,7 +13,7 @@
 
 namespace tcp_file_transfer {
 
-TcpFileClient::TcpFileClient() : client_socket_(-1) {}
+TcpFileClient::TcpFileClient(int timeout_seconds) : client_socket_(-1), timeout_seconds_(timeout_seconds) {}
 
 TcpFileClient::~TcpFileClient() {
     Disconnect();
@@ -204,6 +204,25 @@ bool TcpFileClient::SendMessage(uint32_t type, const std::string& filename, cons
 }
 
 bool TcpFileClient::ReceiveMessage(uint32_t& type, std::string& filename, std::vector<char>& data) {
+    // Set up timeout using select
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(client_socket_, &read_fds);
+    
+    struct timeval timeout;
+    timeout.tv_sec = timeout_seconds_;
+    timeout.tv_usec = 0;
+    
+    int select_result = select(client_socket_ + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while receiving message" << std::endl;
+        }
+        return false;
+    }
+    
     // Read the message header (type and length)
     uint32_t header[2];
     ssize_t bytes_received = recv(client_socket_, header, sizeof(header), 0);
@@ -225,6 +244,17 @@ bool TcpFileClient::ReceiveMessage(uint32_t& type, std::string& filename, std::v
     // Check if the message is too large
     if (length > MAX_FILE_SIZE + 1024) { // Adding some buffer for filename
         std::cerr << "Message too large: " << length << " bytes" << std::endl;
+        return false;
+    }
+
+    // Set up timeout for reading the rest of the message
+    select_result = select(client_socket_ + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while receiving message data" << std::endl;
+        }
         return false;
     }
 

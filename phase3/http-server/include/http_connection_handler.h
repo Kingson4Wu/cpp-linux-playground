@@ -20,8 +20,9 @@ public:
      * 
      * @param client_socket The client socket file descriptor.
      * @param web_root The root directory for serving static files.
+     * @param timeout_seconds The timeout for reading requests in seconds.
      */
-    HttpConnectionHandler(int client_socket, const std::string& web_root);
+    HttpConnectionHandler(int client_socket, const std::string& web_root, int timeout_seconds = 30);
 
     /**
      * @brief Destructor.
@@ -38,6 +39,7 @@ public:
 private:
     int client_socket_; ///< Client socket file descriptor
     std::string web_root_; ///< Root directory for serving static files
+    int timeout_seconds_; ///< Timeout for reading requests in seconds
 
     /**
      * @brief Reads the HTTP request from the client socket.

@@ -10,6 +10,7 @@ struct WcResult {
     int lines = 0;
     int words = 0;
     int characters = 0;
+    bool success = true;  // Indicates if the operation was successful
 };
 
 /**

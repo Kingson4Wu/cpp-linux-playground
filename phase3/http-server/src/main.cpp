@@ -47,6 +47,7 @@
  */
 
 #include "http_connection_handler.h"
+#include "thread_pool.h"
 #include <iostream>
 #include <cstdlib>
 #include <csignal>
@@ -56,14 +57,15 @@
 #include <unistd.h>
 #include <cstring>
 #include <cerrno> // For errno and strerror
+#include <memory> // For std::make_shared
 
 // Global variable to store the server socket for signal handling
 static int server_socket = -1;
+static std::shared_ptr<http_server::ThreadPool> g_thread_pool = nullptr;
 
 // Signal handler for graceful shutdown
 void SignalHandler(int signal) {
-    std::cout << "
-Received signal " << signal << ". Shutting down server..." << std::endl;
+    std::cout << std::endl << "Received signal " << signal << ". Shutting down server..." << std::endl;
     if (server_socket >= 0) {
         close(server_socket);
         server_socket = -1;
@@ -74,6 +76,7 @@ int main(int argc, char* argv[]) {
     // Default values
     int port = 8080;
     std::string web_root = ".";
+    size_t num_threads = 4; // Default number of threads in the thread pool
 
     // Parse command line arguments
     if (argc > 1) {
@@ -93,9 +96,26 @@ int main(int argc, char* argv[]) {
         web_root = argv[2];
     }
 
+    if (argc > 3) {
+        try {
+            num_threads = std::stoull(argv[3]);
+            if (num_threads == 0) {
+                std::cerr << "Invalid number of threads. Must be greater than 0." << std::endl;
+                return 1;
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Invalid number of threads: " << argv[3] << std::endl;
+            return 1;
+        }
+    }
+
     // Register signal handlers for graceful shutdown
     signal(SIGINT, SignalHandler);
     signal(SIGTERM, SignalHandler);
+
+    // Create thread pool
+    g_thread_pool = std::make_shared<http_server::ThreadPool>(num_threads);
+    std::cout << "Created thread pool with " << num_threads << " threads" << std::endl;
 
     // Create server socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -132,6 +152,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "HTTP server listening on port " << port << ", serving files from " << web_root << std::endl;
+    std::cout << "Using " << num_threads << " threads for handling connections" << std::endl;
 
     // Main server loop
     while (server_socket >= 0) {
@@ -155,14 +176,15 @@ int main(int argc, char* argv[]) {
         std::cout << "Accepted connection from " << inet_ntoa(client_addr.sin_addr) 
                   << ":" << ntohs(client_addr.sin_port) << std::endl;
 
-        // Handle the connection
-        // For now, we handle it synchronously. In a more advanced version, we would use a thread pool.
-        http_server::HttpConnectionHandler handler(client_socket, web_root);
-        handler.Handle();
-
-        // Close the client socket (HttpConnectionHandler's destructor will do this)
-        // close(client_socket);
+        // Submit the connection handling task to the thread pool
+        g_thread_pool->Enqueue([client_socket, web_root]() {
+            http_server::HttpConnectionHandler handler(client_socket, web_root);
+            handler.Handle();
+        });
     }
+
+    // Reset the thread pool to ensure all threads finish before exiting
+    g_thread_pool.reset();
 
     std::cout << "Server has stopped." << std::endl;
     return 0;

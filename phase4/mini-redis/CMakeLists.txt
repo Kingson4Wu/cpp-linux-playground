@@ -9,6 +9,7 @@ add_library(mini_redis_lib
     src/protocol.cpp
     src/redis_server.cpp
     src/redis_client.cpp
+    src/thread_pool.cpp
 )
 
 # Link the required libraries

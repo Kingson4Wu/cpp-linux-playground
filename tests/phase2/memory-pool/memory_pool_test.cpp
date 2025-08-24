@@ -207,3 +207,39 @@ TEST_F(MemoryPoolTest, CanDeallocateBlocks) {
     EXPECT_EQ(pool.GetUsedSize(), 0);
     EXPECT_EQ(pool.GetFreeSize(), pool_size);
 }
+
+// Test to check if MemoryPool can coalesce blocks
+TEST_F(MemoryPoolTest, CanCoalesceBlocks) {
+    const size_t pool_size = 1024;
+    memory_pool::MemoryPool pool(pool_size);
+
+    // Allocate three adjacent blocks
+    void* block1 = pool.Allocate(100);
+    EXPECT_NE(block1, nullptr);
+
+    void* block2 = pool.Allocate(200);
+    EXPECT_NE(block2, nullptr);
+
+    void* block3 = pool.Allocate(150);
+    EXPECT_NE(block3, nullptr);
+
+    // Deallocate the middle block first
+    pool.Deallocate(block2, 200);
+
+    // Deallocate the first block (should be coalesced with the middle block)
+    pool.Deallocate(block1, 100);
+
+    // Deallocate the third block (should be coalesced with the previous blocks)
+    pool.Deallocate(block3, 150);
+
+    // Check state - all memory should be free
+    EXPECT_EQ(pool.GetUsedSize(), 0);
+    EXPECT_EQ(pool.GetFreeSize(), pool_size);
+
+    // Try to allocate a large block (should succeed if coalescing worked)
+    void* large_block = pool.Allocate(400);
+    EXPECT_NE(large_block, nullptr);
+
+    // Clean up
+    pool.Deallocate(large_block, 400);
+}

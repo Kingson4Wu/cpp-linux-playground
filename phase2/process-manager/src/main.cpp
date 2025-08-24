@@ -33,7 +33,7 @@
  *   ./build/phase2/process-manager/my_ps [OPTIONS]
  *
  * Options:
- *   -a, --all              Show all processes (default: only current user's processes)
+ *   -a, --all              Show all processes
  *   -f, --full             Show full format listing
  *   -p, --pid PID          Show only the process with the specified PID
  *   -c, --command CMD      Show only processes with the specified command name
@@ -79,45 +79,27 @@
 
 // Function to print help message
 void PrintHelp(const char* prog_name) {
-    std::cout << "Usage: " << prog_name << " [OPTIONS]
-"
-              << "Display information about running processes.
-
-"
-              << "Options:
-"
-              << "  -a, --all              Show all processes
-"
-              << "  -f, --full             Show full format listing
-"
-              << "  -p, --pid PID          Show only the process with the specified PID
-"
-              << "  -c, --command CMD      Show only processes with the specified command name
-"
-              << "  -t, --top              Continuously monitor processes (top-like view)
-"
-              << "  -n, --interval SEC     Set the refresh interval for top mode (default: 1.0 seconds)
-"
-              << "  -h, --help             Show this help message
-";
+    std::cout << "Usage: " << prog_name << " [OPTIONS]" << std::endl
+              << "Display information about running processes." << std::endl << std::endl
+              << "Options:" << std::endl
+              << "  -a, --all              Show all processes" << std::endl
+              << "  -f, --full             Show full format listing" << std::endl
+              << "  -p, --pid PID          Show only the process with the specified PID" << std::endl
+              << "  -c, --command CMD      Show only processes with the specified command name" << std::endl
+              << "  -t, --top              Continuously monitor processes (top-like view)" << std::endl
+              << "  -n, --interval SEC     Set the refresh interval for top mode (default: 1.0 seconds)" << std::endl
+              << "  -h, --help             Show this help message" << std::endl;
 }
 
 // Function to print system information
 void PrintSystemInfo(const process_manager::SystemInfo& sys_info) {
     std::time_t boot_time = std::chrono::system_clock::to_time_t(sys_info.boot_time);
-    std::cout << "System Info:
-";
-    std::cout << "  CPUs: " << sys_info.num_cpus << "
-";
-    std::cout << "  Total Memory: " << sys_info.total_memory << " KB
-";
-    std::cout << "  Free Memory: " << sys_info.free_memory << " KB
-";
-    std::cout << "  Uptime: " << sys_info.uptime << " seconds
-";
-    std::cout << "  Boot Time: " << std::put_time(std::localtime(&boot_time), "%Y-%m-%d %H:%M:%S") << "
-
-";
+    std::cout << "System Info:" << std::endl;
+    std::cout << "  CPUs: " << sys_info.num_cpus << std::endl;
+    std::cout << "  Total Memory: " << sys_info.total_memory << " KB" << std::endl;
+    std::cout << "  Free Memory: " << sys_info.free_memory << " KB" << std::endl;
+    std::cout << "  Uptime: " << sys_info.uptime << " seconds" << std::endl;
+    std::cout << "  Boot Time: " << std::put_time(std::localtime(&boot_time), "%Y-%m-%d %H:%M:%S") << std::endl << std::endl;
 }
 
 // Function to print process information header
@@ -130,14 +112,12 @@ void PrintProcessHeader(bool full_format) {
                   << std::left << std::setw(8) << "PRI" 
                   << std::left << std::setw(8) << "NI" 
                   << std::left << std::setw(10) << "STATE" 
-                  << "COMMAND
-";
+                  << "COMMAND" << std::endl;
     } else {
         std::cout << std::left << std::setw(8) << "PID" 
                   << std::left << std::setw(10) << "CPU%" 
                   << std::left << std::setw(10) << "MEM(KB)" 
-                  << "COMMAND
-";
+                  << "COMMAND" << std::endl;
     }
 }
 
@@ -151,14 +131,12 @@ void PrintProcessInfo(const process_manager::ProcessInfo& info, bool full_format
                   << std::left << std::setw(8) << info.priority
                   << std::left << std::setw(8) << info.nice
                   << std::left << std::setw(10) << info.state
-                  << info.full_command << "
-";
+                  << info.full_command << std::endl;
     } else {
         std::cout << std::left << std::setw(8) << info.pid
                   << std::left << std::setw(10) << std::fixed << std::setprecision(2) << info.cpu_usage
                   << std::left << std::setw(10) << info.memory_usage
-                  << info.command << "
-";
+                  << info.command << std::endl;
     }
 }
 
@@ -204,6 +182,7 @@ void DisplayProcesses(bool show_all, bool full_format, int specific_pid, const s
         } catch (const std::exception& e) {
             // Skip processes that we can't read information for
             // This can happen if the process exits between GetProcessList and ReadProcessInfo
+            // Or if we don't have permission to read the process information
         }
     }
 }
@@ -212,7 +191,16 @@ void DisplayProcesses(bool show_all, bool full_format, int specific_pid, const s
 void MonitorProcesses(bool show_all, bool full_format, double interval) {
     while (true) {
         // Clear screen (Unix/Linux)
-        std::cout << "\033[2J\033[1;1H"; // ANSI escape code to clear screen and move cursor to top-left
+        // Using a more portable approach to clear screen
+#ifdef __linux__
+        system("clear");
+#else
+        // For other Unix-like systems, try clear command
+        if (system("clear") != 0) {
+            // Fall back to ANSI escape codes if clear command fails
+            std::cout << "\033[2J\033[1;1H";
+        }
+#endif
 
         // Print system information
         process_manager::SystemInfo sys_info = process_manager::GetSystemInfo();

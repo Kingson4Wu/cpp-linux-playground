@@ -21,8 +21,10 @@ public:
      * @brief Constructor for DownloadManager.
      * 
      * @param max_concurrent_downloads The maximum number of downloads to run concurrently.
+     * @param resume Whether to resume partial downloads.
+     * @param speed_limit The maximum download speed in bytes per second (0 for no limit).
      */
-    explicit DownloadManager(size_t max_concurrent_downloads = 4);
+    explicit DownloadManager(size_t max_concurrent_downloads = 4, bool resume = false, long speed_limit = 0);
 
     /**
      * @brief Destructor for DownloadManager.
@@ -50,6 +52,8 @@ public:
 
 private:
     size_t max_concurrent_downloads_;
+    bool resume_;
+    long speed_limit_;
     std::vector<std::future<bool>> futures_;
 
     // A simple flag to indicate if the manager is shutting down.
@@ -65,9 +69,11 @@ private:
      * 
      * @param url The URL of the file to download.
      * @param filepath The local path where the file should be saved.
+     * @param resume Whether to resume a partial download.
+     * @param speed_limit The maximum download speed in bytes per second.
      * @return The result of the download operation.
      */
-    static bool RunDownload(const std::string& url, const std::string& filepath);
+    static bool RunDownload(const std::string& url, const std::string& filepath, bool resume, long speed_limit);
 };
 
 } // namespace threaded_downloader

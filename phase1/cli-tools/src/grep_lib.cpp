@@ -62,8 +62,13 @@ bool grep_file(const std::string& pattern, const std::filesystem::path& filepath
     return true;
 }
 
-void grep_text(const std::string& pattern, const std::string& text, 
+bool grep_text(const std::string& pattern, const std::string& text, 
                std::ostream& out, bool show_line_numbers) {
+    // Handle empty text case
+    if (text.empty()) {
+        return true; // Successfully processed empty text
+    }
+
     std::istringstream stream(text);
     std::string line;
     int line_number = 0;
@@ -79,4 +84,6 @@ void grep_text(const std::string& pattern, const std::string& text,
             out << line << std::endl;
         }
     }
+
+    return true;
 }

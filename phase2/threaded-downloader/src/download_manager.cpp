@@ -5,8 +5,8 @@
 
 namespace threaded_downloader {
 
-DownloadManager::DownloadManager(size_t max_concurrent_downloads)
-    : max_concurrent_downloads_(max_concurrent_downloads), shutdown_(false) {}
+DownloadManager::DownloadManager(size_t max_concurrent_downloads, bool resume, long speed_limit)
+    : max_concurrent_downloads_(max_concurrent_downloads), resume_(resume), speed_limit_(speed_limit), shutdown_(false) {}
 
 DownloadManager::~DownloadManager() {
     Wait();
@@ -25,7 +25,7 @@ bool DownloadManager::AddDownload(const std::string& url, const std::string& fil
     }
 
     // Add the download task to the future list
-    futures_.emplace_back(std::async(std::launch::async, RunDownload, url, filepath));
+    futures_.emplace_back(std::async(std::launch::async, RunDownload, url, filepath, resume_, speed_limit_));
 
     // If we've reached the max concurrent downloads, wait for some to finish
     // This is a simple way to limit concurrency. A more sophisticated approach
@@ -53,7 +53,7 @@ void DownloadManager::Wait() {
     futures_.clear();
 }
 
-bool DownloadManager::RunDownload(const std::string& url, const std::string& filepath) {
+bool DownloadManager::RunDownload(const std::string& url, const std::string& filepath, bool resume, long speed_limit) {
     // Simple progress callback for demonstration
     Downloader::ProgressCallback progress_cb = [](const std::string& url, long long dlnow, long long dltotal) {
         if (dltotal > 0) {
@@ -64,7 +64,7 @@ bool DownloadManager::RunDownload(const std::string& url, const std::string& fil
         }
     };
 
-    Downloader downloader(url, filepath, progress_cb);
+    Downloader downloader(url, filepath, progress_cb, resume, speed_limit);
     bool success = downloader.Download();
 
     // Print a newline after progress to avoid overwriting

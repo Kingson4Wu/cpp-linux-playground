@@ -54,8 +54,7 @@ chat_room::ChatServer* g_server = nullptr;
 
 // Signal handler for graceful shutdown
 void SignalHandler(int signal) {
-    std::cout << "
-Received signal " << signal << ". Shutting down server..." << std::endl;
+    std::cout << std::endl << "Received signal " << signal << ". Shutting down server..." << std::endl;
     if (g_server) {
         g_server->Stop();
     }

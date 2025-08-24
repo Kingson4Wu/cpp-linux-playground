@@ -10,7 +10,7 @@ namespace tcp_file_transfer {
 
 class TcpFileClient {
 public:
-    TcpFileClient();
+    TcpFileClient(int timeout_seconds = 30);
     ~TcpFileClient();
 
     // Delete copy constructor and assignment operator
@@ -31,6 +31,7 @@ public:
 
 private:
     int client_socket_;
+    int timeout_seconds_;
 
     // Send a message to the server
     bool SendMessage(uint32_t type, const std::string& filename, const std::vector<char>& data);

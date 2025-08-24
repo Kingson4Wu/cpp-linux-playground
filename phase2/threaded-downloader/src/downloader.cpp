@@ -31,8 +31,8 @@ int ProgressCallbackWrapper(void* clientp, curl_off_t dltotal, curl_off_t dlnow,
     return 0; // Returning a non-zero value will abort the transfer
 }
 
-Downloader::Downloader(const std::string& url, const std::string& filepath, ProgressCallback progress_callback)
-    : url_(url), filepath_(filepath), progress_callback_(progress_callback), curl_(nullptr) {
+Downloader::Downloader(const std::string& url, const std::string& filepath, ProgressCallback progress_callback, bool resume, long speed_limit)
+    : url_(url), filepath_(filepath), progress_callback_(progress_callback), resume_(resume), speed_limit_(speed_limit), curl_(nullptr) {
     curl_ = curl_easy_init();
 }
 
@@ -49,10 +49,27 @@ bool Downloader::Download() {
     }
 
     // Open file for writing (binary mode)
-    std::ofstream file(filepath_, std::ios::binary);
+    std::ios_base::openmode mode = std::ios::binary;
+    if (resume_) {
+        // Check if file exists and get its size
+        std::ifstream existing_file(filepath_, std::ios::binary | std::ios::ate);
+        if (existing_file.is_open()) {
+            // File exists, open in append mode
+            mode |= std::ios::app;
+        }
+    }
+    
+    std::ofstream file(filepath_, mode);
     if (!file.is_open()) {
         std::cerr << "Failed to open file '" << filepath_ << "' for writing: " << strerror(errno) << std::endl;
         return false;
+    }
+
+    // If resuming, get the current file size to set the range header
+    curl_off_t resume_from = 0;
+    if (resume_) {
+        file.seekp(0, std::ios::end);
+        resume_from = file.tellp();
     }
 
     // Set CURL options
@@ -71,6 +88,16 @@ bool Downloader::Download() {
     // Fail on HTTP error codes (e.g., 404)
     curl_easy_setopt(curl_, CURLOPT_FAILONERROR, 1L);
 
+    // Set resume position if needed
+    if (resume_ && resume_from > 0) {
+        curl_easy_setopt(curl_, CURLOPT_RESUME_FROM_LARGE, resume_from);
+    }
+
+    // Set speed limit if specified
+    if (speed_limit_ > 0) {
+        curl_easy_setopt(curl_, CURLOPT_MAX_RECV_SPEED_LARGE, speed_limit_);
+    }
+
     // Perform the request
     CURLcode res = curl_easy_perform(curl_);
 
@@ -78,8 +105,8 @@ bool Downloader::Download() {
     if (res != CURLE_OK) {
         std::cerr << "Download failed for '" << url_ << "': " << curl_easy_strerror(res) << std::endl;
         file.close();
-        // Attempt to remove the partially downloaded file
-        if (std::remove(filepath_.c_str()) != 0) {
+        // If not resuming, attempt to remove the partially downloaded file
+        if (!resume_ && std::remove(filepath_.c_str()) != 0) {
             std::cerr << "Warning: Failed to remove incomplete file '" << filepath_ << "': " << strerror(errno) << std::endl;
         }
         return false;
@@ -91,7 +118,7 @@ bool Downloader::Download() {
     if (response_code >= 400) {
         std::cerr << "HTTP Error " << response_code << " for '" << url_ << "'" << std::endl;
         file.close();
-        if (std::remove(filepath_.c_str()) != 0) {
+        if (!resume_ && std::remove(filepath_.c_str()) != 0) {
             std::cerr << "Warning: Failed to remove incomplete file '" << filepath_ << "': " << strerror(errno) << std::endl;
         }
         return false;

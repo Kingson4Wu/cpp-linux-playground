@@ -33,14 +33,14 @@ WcResult wc_file(const std::filesystem::path& filepath, std::ostream& out) {
     // Check if file exists
     if (!std::filesystem::exists(filepath)) {
         out << "Error: File does not exist: " << filepath << std::endl;
-        return WcResult{};
+        return WcResult{0, 0, 0, false};
     }
 
     // Open file
     std::ifstream file(filepath);
     if (!file.is_open()) {
         out << "Error: Could not open file: " << filepath << std::endl;
-        return WcResult{};
+        return WcResult{0, 0, 0, false};
     }
 
     // Read file content
@@ -53,16 +53,15 @@ WcResult wc_file(const std::filesystem::path& filepath, std::ostream& out) {
 
 WcResult wc_text(const std::string& text) {
     WcResult result;
+    result.success = true;  // Text processing always succeeds
 
     // Count characters
     result.characters = text.length();
 
     // Count lines
-    result.lines = std::count(text.begin(), text.end(), '
-');
+    result.lines = std::count(text.begin(), text.end(), '\n');
     // If the text doesn't end with a newline, we need to add one more line
-    if (!text.empty() && text.back() != '
-') {
+    if (!text.empty() && text.back() != '\n') {
         result.lines++;
     }
 

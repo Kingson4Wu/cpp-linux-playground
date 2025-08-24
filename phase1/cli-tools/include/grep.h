@@ -25,6 +25,8 @@ bool grep_file(const std::string& pattern, const std::filesystem::path& filepath
  * @param text Input text
  * @param out Output stream
  * @param show_line_numbers Whether to show line numbers
+ * @return true Search successful
+ * @return false Search failed
  */
-void grep_text(const std::string& pattern, const std::string& text, 
+bool grep_text(const std::string& pattern, const std::string& text, 
                std::ostream& out, bool show_line_numbers = false);

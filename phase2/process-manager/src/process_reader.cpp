@@ -7,13 +7,16 @@
 #include <climits>
 #include <cstring>
 #include <algorithm>
+#include <chrono>
 
 namespace process_manager {
 
 ProcessInfo ReadProcessInfo(int pid) {
     ProcessInfo info{};
     info.pid = pid;
+    info.last_update = std::chrono::steady_clock::now();
 
+#ifdef __linux__
     // Paths to /proc files
     std::string pid_str = std::to_string(pid);
     std::string stat_path = "/proc/" + pid_str + "/stat";
@@ -61,11 +64,12 @@ ProcessInfo ReadProcessInfo(int pid) {
             info.state = tokens[2];
             info.priority = std::stoi(tokens[17]);
             info.nice = std::stoi(tokens[18]);
-            // For simplicity, we'll use utime + stime as a proxy for CPU usage
+            // Store utime and stime for CPU usage calculation
+            info.utime = std::stoll(tokens[13]);
+            info.stime = std::stoll(tokens[14]);
+            // For simplicity, we'll use a simplified CPU usage calculation for now
             // A more accurate calculation would require sampling over time
-            long utime = std::stol(tokens[13]);
-            long stime = std::stol(tokens[14]);
-            info.cpu_usage = (utime + stime) / 100.0; // Simplified
+            info.cpu_usage = (info.utime + info.stime) / 100.0; // Simplified
             // Memory usage is in pages, convert to KB
             info.memory_usage = std::stol(tokens[23]) * getpagesize() / 1024;
             info.start_time = std::stoll(tokens[21]);
@@ -88,6 +92,15 @@ ProcessInfo ReadProcessInfo(int pid) {
         }
         info.full_command = cmdline;
     }
+#else
+    // On non-Linux systems, we can't read from /proc
+    // For now, we'll just set some default values
+    // In a real implementation, we would use platform-specific APIs
+    info.command = "unknown";
+    info.full_command = "unknown";
+    info.state = "unknown";
+    std::cerr << "Process information reading is only supported on Linux systems." << std::endl;
+#endif
 
     // If full_command is empty, use the command name
     if (info.full_command.empty()) {
@@ -100,6 +113,7 @@ ProcessInfo ReadProcessInfo(int pid) {
 std::vector<int> GetProcessList() {
     std::vector<int> pids;
 
+#ifdef __linux__
     DIR* proc_dir = opendir("/proc");
     if (!proc_dir) {
         std::cerr << "Failed to open /proc directory." << std::endl;
@@ -119,6 +133,13 @@ std::vector<int> GetProcessList() {
     }
 
     closedir(proc_dir);
+#else
+    // On non-Linux systems, we can't read from /proc
+    // For now, we'll just return an empty list
+    // In a real implementation, we would use platform-specific APIs
+    std::cerr << "Process listing is only supported on Linux systems." << std::endl;
+#endif
+
     return pids;
 }
 
@@ -126,11 +147,16 @@ std::vector<int> FilterByCommand(const std::vector<int>& pids, const std::string
     std::vector<int> filtered_pids;
 
     for (int pid : pids) {
-        ProcessInfo info = ReadProcessInfo(pid);
-        // Check if the command name or full command line contains the search string
-        if (info.command.find(command) != std::string::npos || 
-            info.full_command.find(command) != std::string::npos) {
-            filtered_pids.push_back(pid);
+        try {
+            ProcessInfo info = ReadProcessInfo(pid);
+            // Check if the command name or full command line contains the search string
+            if (info.command.find(command) != std::string::npos || 
+                info.full_command.find(command) != std::string::npos) {
+                filtered_pids.push_back(pid);
+            }
+        } catch (const std::exception& e) {
+            // Skip processes that we can't read information for
+            // This can happen if the process exits between GetProcessList and ReadProcessInfo
         }
     }
 

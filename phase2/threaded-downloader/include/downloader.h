@@ -31,9 +31,12 @@ public:
      * @param url The URL of the file to download.
      * @param filepath The local path where the file should be saved.
      * @param progress_callback An optional callback function to report progress.
+     * @param resume Whether to resume a partial download if the file exists.
+     * @param speed_limit The maximum download speed in bytes per second (0 for no limit).
      */
     Downloader(const std::string& url, const std::string& filepath, 
-               ProgressCallback progress_callback = nullptr);
+               ProgressCallback progress_callback = nullptr,
+               bool resume = false, long speed_limit = 0);
 
     /**
      * @brief Destructor for Downloader.
@@ -56,6 +59,8 @@ private:
     std::string url_;
     std::string filepath_;
     ProgressCallback progress_callback_;
+    bool resume_;
+    long speed_limit_;
     CURL* curl_;
 
     // Disable copy constructor and assignment operator

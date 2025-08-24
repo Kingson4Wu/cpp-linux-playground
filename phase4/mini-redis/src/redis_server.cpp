@@ -8,11 +8,13 @@
 #include <cerrno>
 #include <thread>
 #include <vector>
+#include <sys/select.h>
+#include <sys/time.h>
 
 namespace redis {
 
-RedisServer::RedisServer(int port) 
-    : port_(port), stop_(false), server_socket_(-1) {}
+RedisServer::RedisServer(int port, size_t num_threads, int timeout_seconds) 
+    : port_(port), stop_(false), server_socket_(-1), thread_pool_(num_threads), timeout_seconds_(timeout_seconds) {}
 
 RedisServer::~RedisServer() {
     Stop();
@@ -60,10 +62,32 @@ bool RedisServer::Start() {
 
     // Main server loop
     while (!stop_) {
+        // Use select with a timeout to periodically check the stop_ flag
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(server_socket_, &read_fds);
+        
+        struct timeval timeout;
+        timeout.tv_sec = 1; // Check every 1 second
+        timeout.tv_usec = 0;
+        
+        int select_result = select(server_socket_ + 1, &read_fds, NULL, NULL, &timeout);
+        if (select_result < 0) {
+            if (!stop_) {
+                std::cerr << "Error in select: " << strerror(errno) << std::endl;
+            }
+            continue;
+        }
+        
+        // If no activity, continue to check stop_ flag
+        if (select_result == 0) {
+            continue;
+        }
+        
+        // Accept a new connection
         sockaddr_in client_addr{};
         socklen_t client_addr_len = sizeof(client_addr);
 
-        // Accept a new connection
         int client_socket = accept(server_socket_, (struct sockaddr*)&client_addr, &client_addr_len);
         if (client_socket < 0) {
             if (!stop_) {
@@ -75,11 +99,10 @@ bool RedisServer::Start() {
         std::cout << "Accepted connection from " << inet_ntoa(client_addr.sin_addr) 
                   << ":" << ntohs(client_addr.sin_port) << std::endl;
 
-        // Handle the connection in a separate thread
-        std::thread client_thread([this, client_socket]() {
+        // Enqueue the client handling task to the thread pool
+        thread_pool_.Enqueue([this, client_socket]() {
             HandleClient(client_socket);
         });
-        client_thread.detach();
     }
 
     std::cout << "Server has stopped." << std::endl;
@@ -108,11 +131,27 @@ void RedisServer::HandleClient(int client_socket) {
 }
 
 void RedisServer::ProcessCommand(int client_socket) {
-    // For simplicity, we'll read line by line in this implementation
-    // A full implementation would need to handle the complete RESP protocol
-
     char buffer[1024];
     while (!stop_) {
+        // Use select for timeout
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(client_socket, &read_fds);
+        
+        struct timeval timeout;
+        timeout.tv_sec = timeout_seconds_;
+        timeout.tv_usec = 0;
+        
+        int select_result = select(client_socket + 1, &read_fds, NULL, NULL, &timeout);
+        if (select_result <= 0) {
+            if (select_result < 0) {
+                std::cerr << "Error in select: " << strerror(errno) << std::endl;
+            } else {
+                std::cerr << "Timeout while receiving data from client" << std::endl;
+            }
+            break;
+        }
+        
         ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
         if (bytes_received <= 0) {
             if (bytes_received < 0) {

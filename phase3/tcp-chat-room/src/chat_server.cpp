@@ -13,9 +13,15 @@
 
 namespace chat_room {
 
+// Initialize static instance
+ChatServer* ChatServer::instance_ = nullptr;
+
 ChatServer::ChatServer(int port, size_t num_threads)
     : port_(port), server_socket_(-1), running_(false), 
       thread_pool_(num_threads), next_client_id_(0) {
+    // Set the instance
+    instance_ = this;
+    
     // Initialize the server socket
     server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket_ == -1) {

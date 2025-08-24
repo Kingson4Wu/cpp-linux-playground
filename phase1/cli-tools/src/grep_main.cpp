@@ -40,16 +40,28 @@
 #include <iostream>
 #include <filesystem>
 
+void print_usage(const char* program_name) {
+    std::cout << "Usage: " << program_name << " [-n] pattern file\n"
+              << "  -n\tShow line numbers\n"
+              << "  -h\tDisplay this help message\n";
+}
+
 int main(int argc, char* argv[]) {
     bool show_line_numbers = false;
     int pattern_arg_index = 1;
     int file_arg_index = 2;
 
     // Parse command line arguments
-    if (argc > 1 && std::string(argv[1]) == "-n") {
-        show_line_numbers = true;
-        pattern_arg_index = 2;
-        file_arg_index = 3;
+    if (argc > 1) {
+        std::string arg1 = argv[1];
+        if (arg1 == "-n") {
+            show_line_numbers = true;
+            pattern_arg_index = 2;
+            file_arg_index = 3;
+        } else if (arg1 == "-h" || arg1 == "--help") {
+            print_usage(argv[0]);
+            return 0;
+        }
     }
 
     // Check argument count

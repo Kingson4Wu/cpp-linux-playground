@@ -8,8 +8,33 @@
 #include <vector>
 #include <atomic>
 #include <sys/socket.h>
+#include <memory>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <functional>
 
 namespace redis {
+
+// Simple thread pool implementation
+class ThreadPool {
+public:
+    explicit ThreadPool(size_t num_threads);
+    ~ThreadPool();
+
+    // Delete copy constructor and assignment operator
+    ThreadPool(const ThreadPool&) = delete;
+    ThreadPool& operator=(const ThreadPool&) = delete;
+
+    void Enqueue(std::function<void()> task);
+
+private:
+    std::vector<std::thread> workers_;
+    std::queue<std::function<void()>> tasks_;
+    std::mutex queue_mutex_;
+    std::condition_variable condition_;
+    bool stop_;
+};
 
 /**
  * @brief A simple Redis-compatible server
@@ -22,8 +47,10 @@ public:
     /**
      * @brief Construct a new Redis Server object
      * @param port The port to listen on
+     * @param num_threads The number of threads in the thread pool
+     * @param timeout_seconds The timeout for network operations in seconds
      */
-    explicit RedisServer(int port = 6379);
+    explicit RedisServer(int port = 6379, size_t num_threads = 4, int timeout_seconds = 30);
 
     /**
      * @brief Destroy the Redis Server object
@@ -51,6 +78,8 @@ private:
     int server_socket_;
     KVStore store_;
     Protocol protocol_;
+    ThreadPool thread_pool_;
+    int timeout_seconds_;
 
     /**
      * @brief Handle a client connection

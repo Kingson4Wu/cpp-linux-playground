@@ -60,11 +60,21 @@ void FixedBlockAllocator::Deallocate(void* ptr) {
         return;
     }
 
-    // Check if the pointer is properly aligned
+    // Check if the pointer is properly aligned to a block boundary
     size_t offset = ptr_char - pool_start;
     if (offset % block_size_ != 0) {
         // Pointer is not aligned to a block boundary
         return;
+    }
+
+    // Check if the block is already free (double free detection)
+    // This is a simplified check - in a production implementation, 
+    // you might want a more robust mechanism
+    for (size_t i = 0; i < num_free_blocks_; ++i) {
+        if (free_list_[i] == ptr) {
+            // Block is already free
+            return;
+        }
     }
 
     // Add the block back to the free list

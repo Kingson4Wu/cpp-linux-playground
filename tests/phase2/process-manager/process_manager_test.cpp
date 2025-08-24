@@ -24,6 +24,7 @@ protected:
 
 // Test to check if GetProcessList returns a non-empty list
 TEST_F(ProcessManagerTest, GetProcessListReturnsProcesses) {
+#ifdef __linux__
     std::vector<int> pids = process_manager::GetProcessList();
     // We expect at least one process to be running (this test process)
     EXPECT_FALSE(pids.empty());
@@ -32,6 +33,13 @@ TEST_F(ProcessManagerTest, GetProcessListReturnsProcesses) {
     for (int pid : pids) {
         EXPECT_GT(pid, 0);
     }
+#else
+    // On non-Linux systems, GetProcessList returns an empty list
+    // This is expected behavior
+    std::vector<int> pids = process_manager::GetProcessList();
+    // We don't expect any processes to be listed on non-Linux systems
+    EXPECT_TRUE(pids.empty());
+#endif
 }
 
 // Test to check if ReadProcessInfo can read information for the current process
@@ -40,10 +48,16 @@ TEST_F(ProcessManagerTest, ReadProcessInfoForCurrentProcess) {
     process_manager::ProcessInfo info = process_manager::ReadProcessInfo(current_pid);
 
     EXPECT_EQ(info.pid, current_pid);
+    
+#ifdef __linux__
     EXPECT_FALSE(info.command.empty());
     // The command name might be "process_manager" or "process_manager_tests" or similar
     // We'll check that it starts with "process_manager"
     EXPECT_THAT(info.command, ::testing::StartsWith("process_manager"));
+#else
+    // On non-Linux systems, the command name is set to "unknown"
+    EXPECT_EQ(info.command, "unknown");
+#endif
 }
 
 // Test to check if GetNumCPUs returns a reasonable value

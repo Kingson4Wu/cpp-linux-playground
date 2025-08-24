@@ -51,7 +51,8 @@ int main(int argc, char* argv[]) {
         current_path = argv[1];
     }
 
-    list_directory(current_path, std::cout);
-
-    return 0;
+    bool success = list_directory(current_path, std::cout);
+    
+    // Return appropriate exit code based on success
+    return success ? 0 : 1;
 }

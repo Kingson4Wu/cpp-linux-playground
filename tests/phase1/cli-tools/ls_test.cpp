@@ -66,7 +66,7 @@ protected:
 
 TEST_F(LsTest, ListsDirectoryContentsSorted) {
     std::stringstream ss;
-    list_directory(test_dir, ss);
+    bool success = list_directory(test_dir, ss);
 
     auto lines = split_lines(ss.str());
 
@@ -74,6 +74,7 @@ TEST_F(LsTest, ListsDirectoryContentsSorted) {
     EXPECT_EQ(lines[0], "file_a.txt");
     EXPECT_EQ(lines[1], "file_z.txt");
     EXPECT_EQ(lines[2], "subdir_b");
+    EXPECT_TRUE(success);
 }
 
 TEST_F(LsTest, ListsEmptyDirectory) {
@@ -81,29 +82,32 @@ TEST_F(LsTest, ListsEmptyDirectory) {
     std::filesystem::create_directory(empty_dir);
 
     std::stringstream ss;
-    list_directory(empty_dir, ss);
+    bool success = list_directory(empty_dir, ss);
 
     EXPECT_TRUE(ss.str().empty());
+    EXPECT_TRUE(success);
 }
 
 TEST_F(LsTest, ListsSingleFile) {
     auto file_path = test_dir / "file_a.txt";
     std::stringstream ss;
-    list_directory(file_path, ss);
+    bool success = list_directory(file_path, ss);
 
     auto lines = split_lines(ss.str());
     ASSERT_EQ(lines.size(), 1);
     EXPECT_EQ(lines[0], "file_a.txt");
+    EXPECT_TRUE(success);
 }
 
 TEST(LsSimpleTest, HandlesNonExistentPath) {
     std::filesystem::path non_existent_path = "non_existent_dir_12345";
     std::stringstream ss;
-    list_directory(non_existent_path, ss);
+    bool success = list_directory(non_existent_path, ss);
 
     auto lines = split_lines(ss.str());
     ASSERT_EQ(lines.size(), 1);
     EXPECT_EQ(lines[0], "Error: Path does not exist.");
+    EXPECT_FALSE(success);
 }
 
 int main(int argc, char **argv) {

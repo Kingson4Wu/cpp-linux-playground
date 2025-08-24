@@ -7,11 +7,13 @@
 #include <unistd.h>     // For close
 #include <cstring>      // For memset, strerror
 #include <cerrno>       // For errno
+#include <sys/select.h> // For select
+#include <sys/time.h>   // For timeval
 
 namespace http_server {
 
-HttpConnectionHandler::HttpConnectionHandler(int client_socket, const std::string& web_root)
-    : client_socket_(client_socket), web_root_(web_root) {}
+HttpConnectionHandler::HttpConnectionHandler(int client_socket, const std::string& web_root, int timeout_seconds)
+    : client_socket_(client_socket), web_root_(web_root), timeout_seconds_(timeout_seconds) {}
 
 HttpConnectionHandler::~HttpConnectionHandler() {
     if (client_socket_ >= 0) {
@@ -40,6 +42,26 @@ bool HttpConnectionHandler::ReadRequest(HttpRequest& request) {
     // This is a simplified implementation that reads the entire request into a buffer.
     // A more robust implementation would handle large requests and streaming.
     char buffer[4096];
+    
+    // Set up timeout using select
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+    FD_SET(client_socket_, &read_fds);
+    
+    struct timeval timeout;
+    timeout.tv_sec = timeout_seconds_;
+    timeout.tv_usec = 0;
+    
+    int select_result = select(client_socket_ + 1, &read_fds, NULL, NULL, &timeout);
+    if (select_result <= 0) {
+        if (select_result < 0) {
+            std::cerr << "Error in select: " << strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Timeout while reading request" << std::endl;
+        }
+        return false;
+    }
+    
     ssize_t bytes_received = recv(client_socket_, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received <= 0) {
         if (bytes_received < 0) {

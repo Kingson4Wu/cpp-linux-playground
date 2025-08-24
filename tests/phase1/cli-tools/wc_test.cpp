@@ -41,12 +41,9 @@ protected:
         // Create a test file
         test_file = test_dir / "test.txt";
         std::ofstream file(test_file);
-        file << "This is the first line
-";
-        file << "This is the second line
-";
-        file << "This is the third line with more words
-";
+        file << "This is the first line\n";
+        file << "This is the second line\n";
+        file << "This is the third line with more words\n";
         file.close();
     }
 
@@ -66,6 +63,7 @@ TEST_F(WcTest, CountsLinesWordsCharacters) {
     EXPECT_EQ(result.lines, 3);
     EXPECT_EQ(result.words, 18);
     EXPECT_EQ(result.characters, 86);
+    EXPECT_TRUE(result.success);
 }
 
 TEST_F(WcTest, HandlesEmptyFile) {
@@ -79,6 +77,7 @@ TEST_F(WcTest, HandlesEmptyFile) {
     EXPECT_EQ(result.lines, 0);
     EXPECT_EQ(result.words, 0);
     EXPECT_EQ(result.characters, 0);
+    EXPECT_TRUE(result.success);
 }
 
 TEST(WcSimpleTest, HandlesNonExistentFile) {
@@ -89,16 +88,14 @@ TEST(WcSimpleTest, HandlesNonExistentFile) {
     EXPECT_EQ(result.lines, 0);
     EXPECT_EQ(result.words, 0);
     EXPECT_EQ(result.characters, 0);
+    EXPECT_FALSE(result.success);
 
     // Verify that an error message was output
     EXPECT_NE(ss.str().find("Error: File does not exist"), std::string::npos);
 }
 
 TEST(WcTextTest, CountsLinesWordsCharacters) {
-    std::string text = "First line
-Second line with more words
-Third line
-";
+    std::string text = "First line\nSecond line with more words\nThird line\n";
     WcResult result = wc_text(text);
 
     // Verify the counts are correct
@@ -108,9 +105,7 @@ Third line
 }
 
 TEST(WcTextTest, CountsLinesWordsCharactersNoTrailingNewline) {
-    std::string text = "First line
-Second line with more words
-Third line";
+    std::string text = "First line\nSecond line with more words\nThird line";
     WcResult result = wc_text(text);
 
     // Verify the counts are correct

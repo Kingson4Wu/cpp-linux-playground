@@ -10,7 +10,7 @@ namespace tcp_file_transfer {
 
 class TcpFileServer {
 public:
-    TcpFileServer(int port, const std::string& file_storage_path);
+    TcpFileServer(int port, const std::string& file_storage_path, int timeout_seconds = 30);
     ~TcpFileServer();
 
     // Delete copy constructor and assignment operator
@@ -29,6 +29,7 @@ private:
     std::atomic<bool> stop_;
     int server_socket_;
     ThreadPool thread_pool_;
+    int timeout_seconds_;
 
     // Handle a client connection
     void HandleClient(int client_socket);

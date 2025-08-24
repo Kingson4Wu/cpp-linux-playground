@@ -57,6 +57,9 @@ public:
     void AddClient(std::shared_ptr<ChatSession> session);
     void RemoveClient(int client_id);
     void BroadcastMessage(const std::string& message, int sender_id = -1);
+    
+    // Getter for server instance
+    static ChatServer* GetInstance() { return instance_; }
 
 private:
     int port_;                          ///< Port number to listen on
@@ -69,6 +72,9 @@ private:
     std::unordered_map<int, std::shared_ptr<ChatSession>> clients_; ///< Connected clients
     std::mutex clients_mutex_;          ///< Mutex to protect the clients map
     int next_client_id_;                ///< ID counter for new clients
+    
+    // Static instance for access from ChatSession
+    static ChatServer* instance_;
 
     /**
      * @brief Accepts incoming client connections.

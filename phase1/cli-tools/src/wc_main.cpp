@@ -51,16 +51,11 @@
 #include <string>
 
 void print_usage(const char* program_name) {
-    std::cout << "Usage: " << program_name << " [-lwc] [file]
-"
-              << "  -l\tCount lines
-"
-              << "  -w\tCount words
-"
-              << "  -c\tCount characters
-"
-              << "  --help\tDisplay this help message
-";
+    std::cout << "Usage: " << program_name << " [-lwc] [file]\n"
+              << "  -l\tCount lines\n"
+              << "  -w\tCount words\n"
+              << "  -c\tCount characters\n"
+              << "  --help\tDisplay this help message\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -105,7 +100,7 @@ int main(int argc, char* argv[]) {
         // Count from file
         result = wc_file(filepath, std::cerr);
         // If there was an error, exit with error code
-        if (result.lines == 0 && result.words == 0 && result.characters == 0) {
+        if (!result.success) {
             return 1;
         }
     }

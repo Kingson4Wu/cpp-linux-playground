@@ -1,4 +1,5 @@
 #include "chat_session.h"
+#include "chat_server.h"  // Include chat_server.h to access ChatServer::GetInstance()
 #include <iostream>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -16,16 +17,13 @@ ChatSession::ChatSession(int id, int socket)
 }
 
 ChatSession::~ChatSession() {
-    // Ensure the thread is joined before destroying the object
+    // Ensure the threads are joined before destroying the object
     if (receive_thread_.joinable()) {
-        // If the thread is still running, we need to stop it
-        // However, since this is the destructor, we can't call Stop() 
-        // because it's a virtual method and the object might be partially destroyed
-        // Instead, we'll just join the thread
-        // This assumes that the thread will eventually exit on its own
-        // In a real implementation, you would have a more robust mechanism
-        // to signal the thread to stop before destruction
         receive_thread_.join();
+    }
+    
+    if (send_thread_.joinable()) {
+        send_thread_.join();
     }
 
     if (socket_ != -1) {
@@ -40,8 +38,11 @@ void ChatSession::Start() {
     try {
         // Start the receive thread
         receive_thread_ = std::thread(&ChatSession::ReceiveMessages, this);
+        
+        // Start the send thread
+        send_thread_ = std::thread(&ChatSession::SendMessages, this);
     } catch (const std::system_error& e) {
-        std::cerr << "Failed to start receive thread for client " << id_ << ": " << e.what() << std::endl;
+        std::cerr << "Failed to start thread for client " << id_ << ": " << e.what() << std::endl;
         running_ = false;
     }
 }
@@ -50,9 +51,17 @@ void ChatSession::Stop() {
     std::cout << "Stopping session for client " << id_ << " (" << nickname_ << ")" << std::endl;
     running_ = false;
 
+    // Notify the send thread to wake up in case it's waiting
+    send_condition_.notify_all();
+
     // Wait for the receive thread to finish
     if (receive_thread_.joinable()) {
         receive_thread_.join();
+    }
+    
+    // Wait for the send thread to finish
+    if (send_thread_.joinable()) {
+        send_thread_.join();
     }
 }
 
@@ -61,17 +70,56 @@ void ChatSession::Send(const std::string& message) {
         return;
     }
 
-    ssize_t bytes_sent = send(socket_, message.c_str(), message.length(), MSG_NOSIGNAL);
-    if (bytes_sent == -1) {
-        std::cerr << "Failed to send message to client " << id_ << std::endl;
-        // Print the specific error
-        perror("send");
-        // Mark client as disconnected
-        running_ = false;
-    } else if (static_cast<size_t>(bytes_sent) != message.length()) {
-        std::cerr << "Partial send to client " << id_ << std::endl;
-        // Handle partial send (e.g., retry or mark client as disconnected)
-        running_ = false;
+    // Add the message to the send queue
+    {
+        std::lock_guard<std::mutex> lock(send_queue_mutex_);
+        send_queue_.push(message);
+    }
+    
+    // Notify the send thread that a message is available
+    send_condition_.notify_one();
+}
+
+void ChatSession::SendMessages() {
+    while (running_) {
+        std::string message;
+        
+        // Wait for a message to be available in the queue
+        {
+            std::unique_lock<std::mutex> lock(send_queue_mutex_);
+            send_condition_.wait(lock, [this] { 
+                return !send_queue_.empty() || !running_; 
+            });
+            
+            // If the session is no longer running, exit the thread
+            if (!running_ && send_queue_.empty()) {
+                return;
+            }
+            
+            // Get the next message from the queue
+            if (!send_queue_.empty()) {
+                message = send_queue_.front();
+                send_queue_.pop();
+            }
+        }
+        
+        // If we have a message, send it
+        if (!message.empty()) {
+            ssize_t bytes_sent = send(socket_, message.c_str(), message.length(), MSG_NOSIGNAL);
+            if (bytes_sent == -1) {
+                std::cerr << "Failed to send message to client " << id_ << std::endl;
+                // Print the specific error
+                perror("send");
+                // Mark client as disconnected
+                running_ = false;
+                break;
+            } else if (static_cast<size_t>(bytes_sent) != message.length()) {
+                std::cerr << "Partial send to client " << id_ << std::endl;
+                // Handle partial send (e.g., retry or mark client as disconnected)
+                running_ = false;
+                break;
+            }
+        }
     }
 }
 
@@ -81,8 +129,7 @@ void ChatSession::ReceiveMessages() {
 
     // Send a welcome message after a short delay to ensure client is ready
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    std::string welcome_msg = "Welcome, " + nickname_ + "! Type /help for a list of commands.
-";
+    std::string welcome_msg = "Welcome, " + nickname_ + "! Type /help for a list of commands.\n";
     Send(welcome_msg);
 
     while (running_) {
@@ -105,16 +152,14 @@ void ChatSession::ReceiveMessages() {
         std::string message(buffer);
 
         // Remove trailing newline characters
-        message.erase(std::remove(message.begin(), message.end(), '
-'), message.end());
+        message.erase(std::remove(message.begin(), message.end(), '\n'), message.end());
         message.erase(std::remove(message.begin(), message.end(), '\r'), message.end());
 
         std::cout << "Received from client " << id_ << " (" << nickname_ << "): " << message << std::endl;
 
         // Process commands
         if (message == "/quit") {
-            Send("Goodbye!
-");
+            Send("Goodbye!\n");
             break; // This will cause the loop to exit and the session to stop
         } else if (message.substr(0, 5) == "/nick") {
             std::istringstream iss(message);
@@ -123,24 +168,19 @@ void ChatSession::ReceiveMessages() {
             if (!new_nickname.empty()) {
                 std::string old_nickname = nickname_;
                 nickname_ = new_nickname;
-                Send("Nickname changed from " + old_nickname + " to " + nickname_ + "
-");
+                Send("Nickname changed from " + old_nickname + " to " + nickname_ + "\n");
             } else {
-                Send("Usage: /nick <new_nickname>
-");
+                Send("Usage: /nick <new_nickname>\n");
             }
         } else if (message == "/help") {
-            Send("Available commands:
-/nick <new_nickname> - Change your nickname
-/quit - Disconnect from the server
-/help - Show this help message
-");
+            Send("Available commands:\n/nick <new_nickname> - Change your nickname\n/quit - Disconnect from the server\n/help - Show this help message\n");
         } else {
             // Broadcast the message to all other clients
-            // This would typically be done by calling a method on the ChatServer
-            // For now, we'll just echo it back to the client
-            Send(nickname_ + ": " + message + "
-");
+            // Get the server instance and call its broadcast method
+            auto server = ChatServer::GetInstance();
+            if (server) {
+                server->BroadcastMessage(nickname_ + ": " + message + "\n", id_);
+            }
         }
     }
 

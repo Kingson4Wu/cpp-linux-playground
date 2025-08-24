@@ -39,16 +39,11 @@ protected:
         // Create a test file
         test_file = test_dir / "test.txt";
         std::ofstream file(test_file);
-        file << "This is the first line
-";
-        file << "This line contains the pattern
-";
-        file << "Another line without it
-";
-        file << "Pattern appears here too
-";
-        file << "Final line
-";
+        file << "This is the first line\n";
+        file << "This line contains the pattern\n";
+        file << "Another line without it\n";
+        file << "Pattern appears here too\n";
+        file << "Final line\n";
         file.close();
     }
 
@@ -89,7 +84,10 @@ TEST_F(GrepTest, MatchesPatternInText) {
 
 TEST_F(GrepTest, NoMatchInText) {
     std::stringstream ss;
-    grep_file("nonexistent", test_file, ss, false);
+    bool success = grep_file("nonexistent", test_file, ss, false);
+    
+    // Check if function executed successfully
+    EXPECT_TRUE(success);
 
     std::string result = ss.str();
     EXPECT_TRUE(result.empty());
@@ -129,13 +127,12 @@ TEST(GrepSimpleTest, HandlesNonExistentFile) {
 }
 
 TEST(GrepTextTest, MatchesPatternInText) {
-    std::string text = "First line
-Second line with pattern
-Third line
-pattern in fourth line
-Fifth line";
+    std::string text = "First line\nSecond line with pattern\nThird line\npattern in fourth line\nFifth line";
     std::stringstream ss;
-    grep_text("pattern", text, ss, false);
+    bool success = grep_text("pattern", text, ss, false);
+    
+    // Check if function executed successfully
+    EXPECT_TRUE(success);
 
     std::string result = ss.str();
     EXPECT_NE(result.find("Second line with pattern"), std::string::npos);
@@ -143,17 +140,29 @@ Fifth line";
 }
 
 TEST(GrepTextTest, MatchesPatternInTextWithLineNumbers) {
-    std::string text = "First line
-Second line with pattern
-Third line
-pattern in fourth line
-Fifth line";
+    std::string text = "First line\nSecond line with pattern\nThird line\npattern in fourth line\nFifth line";
     std::stringstream ss;
-    grep_text("pattern", text, ss, true);
+    bool success = grep_text("pattern", text, ss, true);
+    
+    // Check if function executed successfully
+    EXPECT_TRUE(success);
 
     std::string result = ss.str();
     EXPECT_NE(result.find("2:Second line with pattern"), std::string::npos);
     EXPECT_NE(result.find("4:pattern in fourth line"), std::string::npos);
+}
+
+TEST(GrepTextTest, HandlesEmptyText) {
+    std::string text = "";
+    std::stringstream ss;
+    bool success = grep_text("pattern", text, ss, false);
+    
+    // Check if function executed successfully
+    EXPECT_TRUE(success);
+    
+    // Result should be empty since there's no text to search
+    std::string result = ss.str();
+    EXPECT_TRUE(result.empty());
 }
 
 int main(int argc, char **argv) {

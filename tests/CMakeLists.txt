@@ -15,3 +15,7 @@ add_subdirectory(phase3/tcp-file-transfer)
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase4/mini-redis/CMakeLists.txt)
     add_subdirectory(phase4/mini-redis)
 endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase4/mini-search/CMakeLists.txt)
+    add_subdirectory(phase4/mini-search)
+endif()

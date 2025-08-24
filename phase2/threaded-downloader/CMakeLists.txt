@@ -13,8 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # --- Dependencies ---
 
 # Find required packages
-find_package(CURL REQUIRED)
+find_package(CURL QUIET)
 find_package(Threads REQUIRED)
+
+# Only build if CURL is found
+if(CURL_FOUND)
+    message(STATUS "Found CURL, building threaded-downloader")
+else()
+    message(STATUS "CURL not found, skipping threaded-downloader")
+    return()
+endif()
 
 # --- Library ---
 

@@ -16,7 +16,7 @@ jobs:
     - name: Set up build environment
       run: |
         sudo apt update
-        sudo apt install -y g++ cmake build-essential ninja-build libboost-all-dev libssl-dev
+        sudo apt install -y g++ cmake build-essential ninja-build libboost-all-dev libssl-dev libcurl4-openssl-dev
 
     - name: Configure CMake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release

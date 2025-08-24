@@ -9,3 +9,4 @@ add_subdirectory(phase2/threaded-downloader)
 # Add subdirectories for phase 3 tests
 add_subdirectory(phase3/tcp-chat-room)
 add_subdirectory(phase3/http-server)
+add_subdirectory(phase3/tcp-file-transfer)

@@ -56,6 +56,19 @@
   - 编写单元测试验证核心功能
   - 使用代码覆盖率工具确保测试质量（目标覆盖率 > 90%）
   - 重视内存安全，使用 valgrind/AddressSanitizer 检测
+  - 单元测试必须按项目规范写在指定目录（`tests/`目录下按阶段和项目组织）
+  - 每个任务完成后必须验证所有单元测试都成功通过，作为任务完成的验证点
+  - 通过运行`./scripts/docker-dev.sh test`并检查输出"100% tests passed"来验证单元测试是否成功
+  - 项目必须能在容器内成功执行`cmake -S . -B build`和`cmake --build build`命令
+  - 注意：由于Docker容器内外路径不同，不能在容器内外混合执行cmake。应该始终在容器内执行cmake，或者在宿主机上执行时先清理build目录。
+  - 可以使用以下命令在容器内验证构建：
+    ```bash
+    # 配置项目
+    docker-compose run --rm cpp-dev bash -c "cd /app && mkdir -p build && cd build && cmake .."
+
+    # 构建项目
+    docker-compose run --rm cpp-dev bash -c "cd /app && mkdir -p build && cd build && cmake .. && make -j4"
+    ```
 
 ## Git 提交规范
 
@@ -205,13 +218,25 @@ WORKDIR /app
 │   └── logger/
 ├── phase2/             # 阶段 2：系统编程
 ├── phase3/             # 阶段 3：网络编程
+│   ├── tcp-chat-room/
+│   ├── http-server/
+│   └── tcp-file-transfer/
 ├── phase4/             # 阶段 4：综合实战
 ├── scripts/            # 辅助脚本 (构建、测试、运行)
 ├── tests/              # 测试文件
-│   └── phase1/
-│       └── cli-tools/
-│           ├── CMakeLists.txt
-│           └── ls_test.cpp
+│   ├── data/           # 测试数据
+│   ├── phase1/
+│   │   └── cli-tools/
+│   │       ├── CMakeLists.txt
+│   │       └── ls_test.cpp
+│   ├── phase2/
+│   │   ├── memory-pool/
+│   │   ├── process-manager/
+│   │   └── threaded-downloader/
+│   └── phase3/
+│       ├── tcp-chat-room/
+│       ├── http-server/
+│       └── tcp-file-transfer/
 └── third_party/        # 第三方依赖库
 ```
 
@@ -225,7 +250,9 @@ WORKDIR /app
 
 ## 当前进度
 
-项目当前处于 **阶段 3：网络编程**，已完成 **TCP 多线程聊天室**、**HTTP 静态文件服务器**。
+项目当前处于 **阶段 3：网络编程**，已完成 **TCP 多线程聊天室**、**HTTP 静态文件服务器**、**TCP 文件传输服务器**。
+
+所有项目均按照要求编写了单元测试，并验证所有测试都成功通过。测试用例按项目规范写在`tests/`目录下对应的阶段和项目子目录中。
 
 ## 运行方式
 

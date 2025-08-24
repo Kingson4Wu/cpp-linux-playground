@@ -8,3 +8,7 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/http-server/CMakeLists.txt)
     add_subdirectory(http-server)
 endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tcp-file-transfer/CMakeLists.txt)
+    add_subdirectory(tcp-file-transfer)
+endif()

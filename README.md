@@ -37,7 +37,7 @@ A hands-on C++ learning playground for Linux, covering system programming, netwo
 ### **阶段 3：网络编程（核心）**
 - 多线程聊天室（TCP 长连接）  
 - 简易 HTTP 服务器（GET/POST，线程池）  
-- 文件传输服务器（大文件分块传输、断点续传）
+- TCP 文件传输服务器（支持上传和下载）
 
 ### **阶段 4：综合项目（实战）**
 - mini-Redis（内存 KV 存储，持久化，epoll 多路复用）  
@@ -214,11 +214,11 @@ make -j
    * 训练点：HTTP 协议解析、状态机、非阻塞 IO
    * 扩展：线程池、keep-alive、gzip 压缩
 
-9. **文件传输服务器**
+9. **TCP 文件传输服务器**
 
-   * 功能：支持大文件分块传输、断点续传
-   * 训练点：socket 编程、epoll、多线程、文件 IO
-   * 扩展：加密传输（OpenSSL）
+   * 功能：支持文件上传和下载
+   * 训练点：TCP socket 编程、多线程、文件 IO、自定义协议
+   * 扩展：大文件分块传输、断点续传
 
 ---
 

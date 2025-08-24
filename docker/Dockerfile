@@ -18,7 +18,14 @@ RUN apt update && apt install -y \
     clang-format \
     valgrind \
     libcurl4-openssl-dev \
+    libgtest-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Build and install Google Test
+RUN cd /usr/src/gtest && \
+    cmake CMakeLists.txt && \
+    make && \
+    cp lib/*.a /usr/lib/
 
 # Set the working directory
 WORKDIR /app

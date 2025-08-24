@@ -173,6 +173,28 @@ bool RedisClient::Ping() {
     return false;
 }
 
+bool RedisClient::Exists(const std::string& key) {
+    // Create EXISTS command in RESP format
+    auto array = protocol_.CreateArray();
+    array->AddElement(std::move(protocol_.CreateBulkString("EXISTS")));
+    array->AddElement(std::move(protocol_.CreateBulkString(key)));
+
+    std::string command = protocol_.Serialize(*array);
+
+    auto response = SendCommand(command);
+    if (!response) {
+        return false;
+    }
+
+    // Check if response is an integer
+    if (response->type == RESPType::INTEGER) {
+        const auto& integer = static_cast<const Integer&>(*response);
+        return integer.value > 0;
+    }
+
+    return false;
+}
+
 bool RedisClient::SendData(const std::string& data) {
     ssize_t total_bytes_sent = 0;
     size_t total_bytes_to_send = data.size();

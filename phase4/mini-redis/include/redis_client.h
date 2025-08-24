@@ -80,6 +80,13 @@ public:
      */
     bool Ping();
 
+    /**
+     * @brief Send an EXISTS command
+     * @param key The key to check
+     * @return true if the key exists, false otherwise
+     */
+    bool Exists(const std::string& key);
+
 private:
     int client_socket_;
     Protocol protocol_;

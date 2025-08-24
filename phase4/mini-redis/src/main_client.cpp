@@ -107,13 +107,13 @@ bool ExecuteCommand(redis::RedisClient& client, const std::vector<std::string>& 
         return true; // This is still a successful operation, just no key deleted
     } else if (command == "EXISTS" && args.size() == 2) {
         const std::string& key = args[1];
-        auto result = client.Get(key); // We're using Get to check existence for simplicity
-        if (result.has_value()) {
+        bool result = client.Exists(key);
+        if (result) {
             std::cout << "(integer) 1" << std::endl;
         } else {
             std::cout << "(integer) 0" << std::endl;
         }
-        return true; // This is still a successful operation, just no key found
+        return true; // This is still a successful operation
     } else if (command == "QUIT") {
         std::cout << "Goodbye!" << std::endl;
         return false; // Signal to quit

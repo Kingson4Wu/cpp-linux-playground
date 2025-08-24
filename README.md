@@ -1,274 +1,257 @@
-# cpp-linux-playground
-A hands-on C++ learning playground for Linux, covering system programming, networking, multithreading, and performance optimization.
+# C++ Linux Backend Development Playground
 
-# cpp-linux-playground
+[![Build Status](https://github.com/your-username/cpp-linux-playground/workflows/CI/badge.svg)](https://github.com/your-username/cpp-linux-playground/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> 🐧 Linux C++ 实战项目路线 | 系统编程 & 网络编程 & 高性能练手合集
+A comprehensive hands-on C++ learning playground for Linux, covering modern C++ syntax, system programming, concurrent programming, network programming, and performance optimization.
 
-这是一个面向有后端开发经验的工程师的 **C++ Linux 实战练手项目合集**。  
-重点覆盖：**现代 C++ 语法、系统编程、并发、多线程、网络编程、调试与工程化能力**。
+## 🎯 Project Goals
 
----
+This repository provides a structured learning path for backend engineers to master C++ through progressive hands-on projects. By completing these projects, you will:
 
-## 🎯 项目目标
+- Master modern C++ (C++11/14/17/20) core features
+- Become proficient in Linux system calls, file I/O, and process/thread management
+- Develop high-performance network services (TCP/HTTP, multiplexing)
+- Learn performance optimization and engineering practices (memory pools, lock optimization, logging libraries, build tools)
+- Build a portfolio of backend C++ projects to showcase your skills
 
-通过一系列分阶段的实战项目，让你：
+## 🚀 Project Roadmap
 
-- 掌握现代 C++（C++11/14/17/20）核心特性  
-- 熟练 Linux 系统调用、文件 IO、进程与线程管理  
-- 能写高性能网络服务（TCP/HTTP、多路复用）  
-- 学会性能优化与工程化（内存池、锁优化、日志库、构建工具）  
-- 积累一整套可展示的后端 C++ 作品集  
+### **Phase 1: Syntax & Tools Familiarization (Beginner)**
 
----
+Foundational projects to get comfortable with C++ syntax, build systems, and debugging tools.
 
-## 🚀 项目路线
+#### Command-Line Tools Suite
+- Implementation of simplified versions of `ls`, `grep`, and `wc`
+- Key learning points: File I/O, string processing, regular expressions, CMake
+- Extensions: Multi-threaded processing for large files
 
-### **阶段 1：语法 & 工具熟悉（入门）**
-- 命令行工具集：实现 `ls` / `grep` / `wc` 简化版  
-- 简易 JSON/YAML 解析器  
-- 多线程日志库（mini-spdlog）
+#### JSON Parser
+- Custom JSON parser implementation
+- Key learning points: STL containers, recursive descent parsing, exception handling
+- Extensions: Serialization and deserialization support
 
-### **阶段 2：系统编程 & 多线程（进阶）**
-- 多线程下载器（支持断点续传）  
-- 进程管理工具（简化 ps/top）  
-- 内存池 allocator（自定义内存分配器）
+#### Multi-threaded Logger
+- Thread-safe logging library (mini-spdlog)
+- Key learning points: Multi-threading synchronization, file buffering, timestamps
+- Extensions: Asynchronous logging, log rotation
 
-### **阶段 3：网络编程（核心）**
-- 多线程聊天室（TCP 长连接）  
-- 简易 HTTP 服务器（GET/POST，线程池）  
-- TCP 文件传输服务器（支持上传和下载）
+### **Phase 2: System Programming & Multi-threading (Intermediate)**
 
-### **阶段 4：综合项目（实战）**
-- mini-Redis（内存 KV 存储，持久化，epoll 多路复用）  
-- mini-Search（倒排索引搜索引擎）  
-- 高并发爬虫（异步网络 IO + 任务队列）
+Projects focused on Linux system calls, process/thread management, and memory management.
 
-### **阶段 5：源码阅读 & 性能优化**
-- 阅读 `muduo`、`leveldb`、`nginx` 源码  
-- 内存池、锁优化、缓存友好数据结构  
+#### Multi-threaded Downloader
+- Concurrent file downloader (HTTP GET)
+- Key learning points: pthread/C++11 threads, condition variables, sockets
+- Extensions: Resume downloads, rate limiting
 
----
+#### Process Manager
+- Simplified implementation of `ps` or `top`
+- Key learning points: Reading `/proc`, system calls, signal handling
+- Extensions: Process tree visualization
 
-## 🛠 技术栈
+#### Memory Pool Allocator
+- Custom memory allocator (alternative to new/delete)
+- Key learning points: Memory management, alignment, free lists
+- Extensions: Performance benchmarking against standard allocators
 
-- **语言**：C++11/14/17/20  
-- **平台**：Linux (推荐 Ubuntu / Debian)  
-- **构建工具**：CMake / Makefile  
-- **调试分析**：GDB / Valgrind / Perf / AddressSanitizer  
-- **网络**：Socket API / epoll / Reactor 模型
+### **Phase 3: Network Programming (Core)**
 
-### 使用 Docker 开发脚本
+Projects to develop stable, high-performance C++ network services.
+
+#### Multi-threaded Chat Room (TCP)
+- Multi-client chat application with message broadcasting
+- Key learning points: Sockets, epoll, multi-threading synchronization
+- Extensions: Protocol buffers, command parsing
+
+#### HTTP Static File Server
+- HTTP server supporting GET/POST requests for static files
+- Key learning points: HTTP protocol parsing, state machines, non-blocking I/O
+- Extensions: Thread pools, keep-alive connections, gzip compression
+
+#### TCP File Transfer Server
+- Server supporting file upload and download
+- Key learning points: TCP socket programming, multi-threading, file I/O, custom protocols
+- Extensions: Large file chunked transfer, resume downloads
+
+### **Phase 4: Comprehensive Projects (Advanced)**
+
+Integrated projects combining C++ language features, system programming, network programming, and performance optimization.
+
+#### Mini-Redis (KV Storage Engine)
+- In-memory key-value storage with Redis-like functionality
+- Key learning points: Hash table implementation, persistence (AOF/snapshot), multiplexing (epoll)
+- Extensions: LRU cache eviction, transactions, multi-threading
+
+#### Mini-Search (Search Engine)
+- Text search engine with inverted index
+- Key learning points: Inverted indexing, file I/O, multi-threaded index building
+- Extensions: HTTP API for querying
+
+#### High-concurrency Web Crawler
+- Concurrent web crawler with thread pool and task queue
+- Key learning points: HTTP client implementation, thread pools, concurrent programming
+- Extensions: Rate limiting, proxy support, resume crawling
+
+## 🛠 Technology Stack
+
+- **Language**: Modern C++ (C++11/14/17/20)
+- **Platform**: Linux (Ubuntu/Debian recommended)
+- **Build Tools**: CMake, Makefile
+- **Debugging & Analysis**: GDB, Valgrind, Perf, AddressSanitizer
+- **Networking**: Socket API, epoll, Reactor pattern
+- **Testing**: Google Test framework
+- **Containerization**: Docker for consistent development environment
+
+## 🏗 Development Environment Setup
+
+### Prerequisites
+
+- Docker (recommended for consistent environment)
+- Git
+- Basic understanding of C++ and Linux
+
+### Quick Start with Docker
+
 ```bash
-# 构建 Docker 镜像
+# Clone the repository
+git clone https://github.com/your-username/cpp-linux-playground.git
+cd cpp-linux-playground
+
+# Build Docker image
 ./scripts/docker-dev.sh build
 
-# 启动容器
+# Start container
 ./scripts/docker-dev.sh run
 
-# 进入容器
+# Enter container
 ./scripts/docker-dev.sh exec
 
-# 构建并运行 my_ls
+# Build and run specific tools
 ./scripts/docker-dev.sh run-ls
-
-# 构建并运行 my_grep
 ./scripts/docker-dev.sh run-grep
-
-# 构建并运行 my_wc
 ./scripts/docker-dev.sh run-wc
 
-# 运行测试 (使用独立的 build-test 目录)
+# Run all tests
 ./scripts/docker-dev.sh test
 
-# 调试测试 (使用独立的 build 目录)
+# Debug with GDB
 ./scripts/docker-dev.sh debug
 
-# 停止容器
+# Generate code coverage report
+./scripts/docker-dev.sh coverage
+
+# Stop container
 ./scripts/docker-dev.sh stop
 
-# 清理容器和卷
+# Clean up
 ./scripts/docker-dev.sh clean
 ```
 
-**注意**: 为了提高开发效率，不同的任务使用了独立的构建目录：
-*   `run-*` 和 `debug` 命令使用 `build/` 目录。
-*   `test` 命令使用 `build-test/` 目录。
-*   `coverage` 命令使用 `build_coverage/` 目录。
-这样可以避免在不同任务之间切换时进行不必要的重新编译。
+**Note**: To improve development efficiency, different tasks use separate build directories:
+- `run-*` and `debug` commands use the `build/` directory
+- `test` command uses the `build-test/` directory
+- `coverage` command uses the `build_coverage/` directory
 
-## 📊 代码覆盖率
+This prevents unnecessary recompilation when switching between tasks.
 
-为了确保代码质量和测试完整性，项目支持生成代码覆盖率报告：
+## 🧪 Testing & Quality Assurance
+
+### Unit Testing
+
+All projects include comprehensive unit tests using Google Test framework:
 
 ```bash
-# 使用 Docker 生成覆盖率报告
+# Run all tests
+./scripts/docker-dev.sh test
+
+# Run specific test suite
+./scripts/docker-dev.sh exec bash -c "cd /app/build && ./tests/phase1/cli-tools/ls_test"
+```
+
+### Code Coverage
+
+To ensure code quality and test completeness, the project supports generating code coverage reports:
+
+```bash
+# Generate coverage report
 ./scripts/docker-dev.sh coverage
 ```
 
-覆盖率报告将生成在 `build_coverage/coverage/` 目录中：
-- HTML 格式报告：`build_coverage/coverage/index.html`
-- XML 格式报告：`build_coverage/coverage/coverage.xml`
+Coverage reports are generated in `build_coverage/coverage/`:
+- HTML format: `build_coverage/coverage/index.html`
+- XML format: `build_coverage/coverage/coverage.xml`
 
-目标是达到 90% 以上的代码覆盖率，以确保核心功能得到充分测试。  
+Target coverage: 90%+ to ensure core functionality is thoroughly tested.
 
----
+### Static Analysis & Sanitizers
 
-## 📖 学习资源
-
-- 《Effective C++》《More Effective C++》— Scott Meyers  
-- 《C++ Primer（第5版）》  
-- 《Advanced Programming in the UNIX Environment》— W. Richard Stevens  
-- 《UNIX Network Programming》— W. Richard Stevens  
-- 《Linux 高性能服务器编程》— 游双  
-- [CppReference](https://en.cppreference.com)  
-
----
-
-## 💡 使用方法
+The project supports various static analysis tools and sanitizers:
 
 ```bash
-# 克隆仓库
-git clone https://github.com/你的用户名/cpp-linux-playground.git
-cd cpp-linux-playground
+# Build with AddressSanitizer
+cmake -S . -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON
+cmake --build build-asan
 
-# 构建示例项目
-mkdir build && cd build
-cmake ..
-make -j
+# Run with AddressSanitizer
+./build-asan/phase1/cli-tools/my_ls
+```
 
-# 运行示例
-./bin/项目名
+## 📊 Project Components Overview
 
-=====
+### Phase 1: CLI Tools
+- **my_ls**: Enhanced directory listing utility
+- **my_grep**: Pattern matching tool with regex support
+- **my_wc**: Word, line, and character counting utility
+- **JSON Parser**: Custom JSON parsing library
+- **Logger**: Thread-safe logging library
 
-# Linux C++ 实战项目路线
+### Phase 2: System Programming
+- **Threaded Downloader**: Multi-threaded HTTP file downloader
+- **Process Manager**: System process monitoring utility
+- **Memory Pool**: Custom memory allocator implementation
 
-有，而且如果你是后端工程师出身，用 C++ 练手的项目最好能覆盖**系统编程、网络编程、多线程、性能优化**这几个核心能力，这样你既能巩固语言功底，又能学到 Linux 系统底层知识。
+### Phase 3: Network Programming
+- **TCP Chat Room**: Multi-user chat server and client
+- **HTTP Server**: Static file web server with thread pool
+- **TCP File Transfer**: File upload/download server and client
 
-我帮你按**难度梯度**列了一些实用的 C++ 练手项目，每个都有学习价值和技术要点。
+### Phase 4: Advanced Applications
+- **Mini-Redis**: Redis-compatible in-memory key-value store
+- **Mini-Search**: Text search engine with inverted index
+- **Web Crawler**: High-concurrency web crawling framework
 
----
+## 📚 Learning Resources
 
-## **阶段 1：语法 & 工具熟悉期（入门级）**
+### Books
+- "Effective C++" / "More Effective C++" - Scott Meyers
+- "C++ Primer (5th Edition)"
+- "Advanced Programming in the UNIX Environment" - W. Richard Stevens
+- "UNIX Network Programming" - W. Richard Stevens
+- "Linux High Performance Server Programming" - Shuang You
 
-目标：熟悉 C++ 现代语法、CMake 构建、调试工具链。
+### Online Resources
+- [CppReference](https://en.cppreference.com)
+- [Modern C++ Features](https://github.com/AnthonyCalandra/modern-cpp-features)
+- [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines)
 
-1. **命令行工具集**
+## 🤝 Contributing
 
-   * 功能：实现 `ls`、`grep`、`wc` 的简化版
-   * 训练点：文件 IO、字符串处理、正则表达式（`<regex>`）、CMake
-   * 扩展：支持多线程处理大文件
+This project is primarily for educational purposes, but contributions are welcome:
 
-2. **简易 JSON/YAML 解析器**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-   * 功能：手写 JSON/YAML 解析
-   * 训练点：STL 容器、递归下降解析、异常处理
-   * 扩展：支持序列化 & 反序列化
+Please ensure all tests pass before submitting a pull request.
 
-3. **日志库（mini-spdlog）**
+## 📄 License
 
-   * 功能：多线程安全写日志到文件
-   * 训练点：多线程同步（mutex、lock\_guard）、文件缓冲、时间戳
-   * 扩展：异步日志、日志轮转
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🙏 Acknowledgments
 
-## **阶段 2：系统编程 & 多线程（进阶）**
-
-目标：掌握 Linux 系统调用、进程/线程管理、内存管理。
-
-4. **多线程下载器**
-
-   * 功能：并发下载文件（HTTP GET）
-   * 训练点：pthread / C++11 thread、条件变量、socket
-   * 扩展：断点续传、限速
-
-5. **进程管理工具**
-
-   * 功能：实现简化版 `ps` 或 `top`
-   * 训练点：读取 `/proc`、系统调用、信号处理
-   * 扩展：进程树可视化
-
-6. **内存池 allocator**
-
-   * 功能：自定义内存分配器（替代 new/delete）
-   * 训练点：内存管理、对齐、free list
-   * 扩展：性能测试与标准分配器对比
-
----
-
-## **阶段 3：网络编程（核心）**
-
-目标：能写出稳定、高性能的 C++ 网络服务。
-
-7. **多线程聊天室（TCP）**
-
-   * 功能：多个客户端互相收发消息
-   * 训练点：socket、epoll、多线程同步
-   * 扩展：protobuf 消息格式、命令协议解析
-
-8. **简易 HTTP 服务器**
-
-   * 功能：支持 GET/POST 请求，返回静态文件
-   * 训练点：HTTP 协议解析、状态机、非阻塞 IO
-   * 扩展：线程池、keep-alive、gzip 压缩
-
-9. **TCP 文件传输服务器**
-
-   * 功能：支持文件上传和下载
-   * 训练点：TCP socket 编程、多线程、文件 IO、自定义协议
-   * 扩展：大文件分块传输、断点续传
-
----
-
-## **阶段 4：综合项目（实战）**
-
-目标：结合 C++ 语言、系统编程、网络编程、性能优化，做成一个**可用的后端服务**。
-
-10. **KV 存储引擎（mini-Redis）**
-
-    * 功能：内存 KV 存储，支持 GET/SET
-    * 训练点：哈希表实现、持久化（AOF/快照）、多路复用（epoll）
-    * 扩展：LRU 缓存淘汰、事务、多线程
-
-11. **搜索引擎原型（mini-Search）**
-
-    * 功能：索引一批文本文件并支持搜索
-    * 训练点：倒排索引、文件 IO、多线程构建索引
-    * 扩展：HTTP API 查询接口
-
-12. **高并发爬虫**
-
-    * 功能：并发抓取网页并解析内容
-    * 训练点：libcurl/Boost.Asio、线程池、任务队列
-    * 扩展：限速、代理池、断点续抓
-
----
-
-## **阶段 5：源码阅读 & 高阶优化**
-
-目标：通过阅读优秀 C++ 项目源码，学习工程化和性能优化。
-
-* **muduo**（高性能网络库）
-* **leveldb**（Google KV 存储引擎）
-* **nginx**（事件驱动模型，虽然是 C 但对 C++ 网络编程帮助很大）
-
-====
-
-1.  **编译项目** (如果未编译或有改动):
-    ```bash
-    # 配置
-    cmake -S . -B build
-    # 构建
-    cmake --build build
-    ```
-
-2.  **运行 `my_ls` 程序**:
-    可执行文件位于 `build` 目录中。从项目根目录运行以下命令：
-    ```bash
-    ./build/phase1/cli-tools/my_ls
-    ```
-
-运行后，你应该会看到输出：
-`Hello from my_ls!`
+- Inspired by various C++ learning resources and real-world backend development practices
+- Special thanks to open-source projects that influenced the design of these implementations

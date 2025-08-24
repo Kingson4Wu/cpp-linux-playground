@@ -10,3 +10,8 @@ add_subdirectory(phase2/threaded-downloader)
 add_subdirectory(phase3/tcp-chat-room)
 add_subdirectory(phase3/http-server)
 add_subdirectory(phase3/tcp-file-transfer)
+
+# Add subdirectories for phase 4 tests
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase4/mini-redis/CMakeLists.txt)
+    add_subdirectory(phase4/mini-redis)
+endif()

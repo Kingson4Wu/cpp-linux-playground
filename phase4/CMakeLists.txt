@@ -1,0 +1,6 @@
+# CMakeLists.txt for phase4
+
+# Add mini-redis subdirectory if it exists
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mini-redis/CMakeLists.txt)
+    add_subdirectory(mini-redis)
+endif()

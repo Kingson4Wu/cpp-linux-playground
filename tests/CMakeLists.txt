@@ -19,3 +19,7 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase4/mini-search/CMakeLists.txt)
     add_subdirectory(phase4/mini-search)
 endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/phase4/crawler/CMakeLists.txt)
+    add_subdirectory(phase4/crawler)
+endif()

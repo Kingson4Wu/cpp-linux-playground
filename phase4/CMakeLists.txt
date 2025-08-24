@@ -9,3 +9,8 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mini-search/CMakeLists.txt)
     add_subdirectory(mini-search)
 endif()
+
+# Add crawler subdirectory if it exists
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/crawler/CMakeLists.txt)
+    add_subdirectory(crawler)
+endif()

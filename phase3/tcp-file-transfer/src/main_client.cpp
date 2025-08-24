@@ -32,12 +32,22 @@
  *   ./build/phase3/tcp-file-transfer/tcp_file_client [SERVER_IP] [PORT] upload [LOCAL_FILE] [REMOTE_FILENAME]
  *   ./build/phase3/tcp-file-transfer/tcp_file_client [SERVER_IP] [PORT] download [REMOTE_FILENAME] [LOCAL_FILE]
  *
+ *   If REMOTE_FILENAME or LOCAL_FILE is omitted, the default filename will be used.
+ *   For uploads, the default remote filename is the basename of the local file.
+ *   For downloads, the default local filename is the remote filename.
+ *
  * Examples:
- *   # Upload a file
+ *   # Upload a file with a custom remote name
  *   ./build/phase3/tcp-file-transfer/tcp_file_client 127.0.0.1 8080 upload /path/to/local/file.txt remote_file.txt
  *
- *   # Download a file
+ *   # Upload a file with the default remote name (file.txt)
+ *   ./build/phase3/tcp-file-transfer/tcp_file_client 127.0.0.1 8080 upload /path/to/local/file.txt
+ *
+ *   # Download a file with a custom local name
  *   ./build/phase3/tcp-file-transfer/tcp_file_client 127.0.0.1 8080 download remote_file.txt /path/to/local/file.txt
+ *
+ *   # Download a file with the default local name (remote_file.txt)
+ *   ./build/phase3/tcp-file-transfer/tcp_file_client 127.0.0.1 8080 download remote_file.txt
  *
  * Debugging with VS Code Dev Container + CMake Tools:
  *   1. Install the "Dev Containers" and "CMake Tools" extensions in VS Code.
@@ -50,6 +60,12 @@
 #include "tcp_file_client.h"
 #include <iostream>
 #include <cstdlib>
+#include <filesystem>
+
+// Extract the basename of a file path
+std::string GetBasename(const std::string& path) {
+    return std::filesystem::path(path).filename().string();
+}
 
 int main(int argc, char* argv[]) {
     // Parse command line arguments
@@ -88,13 +104,13 @@ int main(int argc, char* argv[]) {
 
     // Execute the command
     bool success = false;
-    if (command == "upload" && argc == 6) {
+    if (command == "upload" && (argc == 5 || argc == 6)) {
         std::string local_file = argv[4];
-        std::string remote_filename = argv[5];
+        std::string remote_filename = (argc == 6) ? argv[5] : GetBasename(local_file);
         success = client.UploadFile(local_file, remote_filename);
-    } else if (command == "download" && argc == 6) {
+    } else if (command == "download" && (argc == 5 || argc == 6)) {
         std::string remote_filename = argv[4];
-        std::string local_file = argv[5];
+        std::string local_file = (argc == 6) ? argv[5] : remote_filename;
         success = client.DownloadFile(remote_filename, local_file);
     } else {
         std::cerr << "Invalid command or arguments." << std::endl;

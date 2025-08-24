@@ -7,6 +7,7 @@ find_package(Threads REQUIRED)
 add_executable(tcp_file_transfer_unit_tests
     file_transfer_protocol_test.cpp
     tcp_file_server_test.cpp
+    tcp_file_client_test.cpp
 )
 
 # Link the required libraries

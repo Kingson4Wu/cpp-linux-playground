@@ -38,6 +38,14 @@
  *   # Run the server on port 9000, storing files in /var/files
  *   ./build/phase3/tcp-file-transfer/tcp_file_server 9000 /var/files
  *
+ * Note: This server works with the TCP file transfer client, which now supports
+ * uploading and downloading files without specifying a new filename. When using
+ * the client with this feature:
+ *   - For uploads, if no remote filename is specified, the client will use the
+ *     basename of the local file as the remote filename.
+ *   - For downloads, if no local filename is specified, the client will use the
+ *     remote filename as the local filename.
+ *
  * Debugging with VS Code Dev Container + CMake Tools:
  *   1. Install the "Dev Containers" and "CMake Tools" extensions in VS Code.
  *   2. Open the project in a Dev Container (VS Code will attach into Docker).

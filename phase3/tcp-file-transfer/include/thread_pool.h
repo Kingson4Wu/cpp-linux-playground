@@ -23,7 +23,7 @@ public:
 
     // Enqueue a task
     template<class F, class... Args>
-    auto Enqueue(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type>;
+    auto Enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type>;
 
     // Stop the thread pool
     void Stop();
@@ -38,8 +38,8 @@ private:
 
 // Implementation of the Enqueue method
 template<class F, class... Args>
-auto ThreadPool::Enqueue(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type> {
-    using return_type = typename std::result_of<F(Args...)>::type;
+auto ThreadPool::Enqueue(F&& f, Args&&... args) -> std::future<typename std::invoke_result<F, Args...>::type> {
+    using return_type = typename std::invoke_result<F, Args...>::type;
 
     auto task = std::make_shared<std::packaged_task<return_type()>>(
         std::bind(std::forward<F>(f), std::forward<Args>(args)...)

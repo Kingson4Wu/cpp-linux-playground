@@ -1,9 +1,9 @@
 # C++ Linux Backend Development Playground
 
-[![Build Status](https://github.com/your-username/cpp-linux-playground/workflows/CI/badge.svg)](https://github.com/your-username/cpp-linux-playground/actions)
+[![Build Status](https://github.com/Kingson4Wu/cpp-linux-playground/workflows/CI/badge.svg)](https://github.com/Kingson4Wu/cpp-linux-playground/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![C++](https://img.shields.io/badge/language-C++20-blue.svg)](https://en.cppreference.com/)
-[![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/your-username/cpp-linux-playground)
+[![Coverage](https://img.shields.io/badge/coverage-90%25-green.svg)](https://github.com/Kingson4Wu/cpp-linux-playground)
 
 A comprehensive hands-on C++ learning playground for Linux, covering modern C++ syntax, system programming, concurrent programming, network programming, and performance optimization through progressive, real-world projects.
 

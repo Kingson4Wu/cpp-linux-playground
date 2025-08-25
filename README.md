@@ -218,6 +218,9 @@ cd cpp-linux-playground
 # Generate code coverage report
 ./scripts/docker-dev.sh coverage
 
+# Open coverage report in browser
+./scripts/docker-dev.sh open-coverage
+
 # Stop container
 ./scripts/docker-dev.sh stop
 
@@ -243,10 +246,10 @@ All projects include comprehensive unit tests using Google Test framework with s
 ./scripts/docker-dev.sh test
 
 # Run specific test suite
-./scripts/docker-dev.sh exec bash -c "cd /app/build && ./tests/phase1/cli-tools/ls_test"
+./scripts/docker-dev.sh exec bash -c "cd /app/build-test && ./tests/phase1/cli-tools/ls_test"
 
 # Run tests with verbose output
-./scripts/docker-dev.sh exec bash -c "cd /app/build && ./tests/phase4/crawler/crawler_tests --gtest_output=xml:results.xml"
+./scripts/docker-dev.sh exec bash -c "cd /app/build-test && ./tests/phase4/crawler/crawler_tests --gtest_output=xml:results.xml"
 ```
 
 ### Integration Testing
@@ -271,8 +274,8 @@ To ensure code quality and test completeness, the project supports generating co
 # Generate coverage report
 ./scripts/docker-dev.sh coverage
 
-# View HTML coverage report
-./scripts/docker-dev.sh exec bash -c "firefox /app/build_coverage/coverage/index.html"
+# Open coverage report in browser
+./scripts/docker-dev.sh open-coverage
 ```
 
 Coverage reports are generated in `build_coverage/coverage/`:
@@ -298,22 +301,6 @@ cmake --build build-tsan
 
 # Run with ThreadSanitizer
 ./build-tsan/phase1/cli-tools/my_ls
-
-# Static analysis with clang-tidy
-./scripts/run-clang-tidy.sh
-```
-
-### Performance Benchmarking
-
-Performance testing is integrated into the build system:
-
-```bash
-# Run benchmarks
-./scripts/docker-dev.sh exec bash -c "cd /app/build && ./benchmarks/run_benchmarks.sh"
-
-# Profile with perf
-./scripts/docker-dev.sh exec bash -c "perf record -g ./build/phase4/mini-redis/redis_server"
-./scripts/docker-dev.sh exec bash -c "perf report"
 ```
 
 ## 📊 Detailed Project Components Overview
@@ -452,12 +439,12 @@ Performance testing is integrated into the build system:
 - "UNIX Network Programming" - W. Richard Stevens
 - "Linux High Performance Server Programming" - Shuang You
 - "C++ Concurrency in Action" - Anthony Williams
-- "Network Programming with Go" - Jan Newmarch (for comparative understanding)
 
 ### Online Resources
 - [CppReference](https://en.cppreference.com) - Comprehensive C++ standard library documentation
 - [Modern C++ Features](https://github.com/AnthonyCalandra/modern-cpp-features) - C++11/14/17/20 feature reference
 - [C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines) - Official guidelines from Bjarne Stroustrup and Herb Sutter
+- [C++ Tour](https://www.learncpp.com/) - A comprehensive tutorial covering the basics and advanced features of C++ for experienced programmers
 - [Boost Documentation](https://www.boost.org/doc/) - Advanced C++ libraries (for reference)
 - [Linux Man Pages](https://man7.org/linux/man-pages/) - System call and library documentation
 - [HTTP Specification](https://tools.ietf.org/html/rfc7230) - RFC 7230-7237 for HTTP/1.1

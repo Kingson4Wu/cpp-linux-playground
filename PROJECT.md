@@ -1,80 +1,80 @@
-# Linux C++ 后端开发实战学习项目
+# Linux C++ Backend Development Hands-on Learning Project
 
-这是一个面向有后端开发经验工程师的 Linux C++ 学习项目，通过渐进式实战项目掌握现代 C++、系统编程、网络编程和性能优化。
+This is a Linux C++ learning project for engineers with backend development experience, designed to master modern C++, system programming, network programming, and performance optimization through progressive hands-on projects.
 
-## 项目概述
+## Project Overview
 
-### 核心特点
-- **语言标准**: C++20
-- **构建工具**: CMake (>= 3.20)
-- **开发环境**: 跨平台（Mac/Windows/Linux）+ Docker
-- **运行环境**: Linux Docker 容器
-- **调试工具**: gdb/lldb + VSCode Remote-Containers
+### Core Features
+- **Language Standard**: C++20
+- **Build Tool**: CMake (>= 3.20)
+- **Development Environment**: Cross-platform (Mac/Windows/Linux) + Docker
+- **Runtime Environment**: Linux Docker Container
+- **Debugging Tools**: gdb/lldb + VSCode Remote-Containers
 
-## 项目阶段与学习路径
+## Project Stages and Learning Path
 
-### 阶段 1：语法与工具熟悉
-- 命令行工具集（ls/grep/wc 简化版）
-- JSON 解析器
-- 多线程日志库
+### Phase 1: Syntax and Tool Familiarization
+- Command-line tool suite (simplified versions of ls/grep/wc)
+- JSON Parser
+- Multi-threaded Logger
 
-### 阶段 2：系统编程
-目标：掌握Linux系统调用、进程/线程管理、内存管理
-- 多线程下载器
-- 进程管理工具（ps/top 简化版）
-- 内存池分配器
+### Phase 2: System Programming
+Goal: Master Linux system calls, process/thread management, and memory management
+- Multi-threaded Downloader
+- Process Management Tool (simplified ps/top)
+- Memory Pool Allocator
 
-### 阶段 3：网络编程
-目标：能写出稳定、高性能的C++网络服务
-- TCP 多线程聊天室
-- HTTP 静态文件服务器
-- TCP 文件传输服务器
+### Phase 3: Network Programming
+Goal: Be able to write stable, high-performance C++ network services
+- TCP Multi-threaded Chat Room
+- HTTP Static File Server
+- TCP File Transfer Server
 
-### 阶段 4：综合实战
-目标：结合所有技能，做成可用的后端服务
-- mini-Redis（KV 存储）
-- mini-Search（搜索引擎）
-- 高并发爬虫
+### Phase 4: Comprehensive Practice
+Goal: Combine all skills to create usable backend services
+- mini-Redis (KV Storage)
+- mini-Search (Search Engine)
+- High-concurrency Crawler
 
-## 重要约定与规范
+## Important Conventions and Standards
 
-- **编译标准**: `-std=c++20`
-- **构建目录**: `build/`
-- **源码目录**: 按阶段组织（如 `phase1/`）
-- **测试文件**: `*_test.cpp`
-- **头文件**: `include/` 目录
-- **CMake 配置**: 每个项目独立 CMakeLists.txt
-- **文档规范**: 
-  - 每个可执行子项目的主源文件头部必须包含编译、运行和使用方法的注释说明
-  - 每个库的实现文件也需要包含使用说明和运行方法
-  - 测试文件需要包含如何运行测试的说明
-- **开发规范**:
-  - 所有代码注释和说明必须使用英文
-  - 除非有用户的明确指令，否则不要提交代码变动到 Git
-  - 执行任何任务前，必须先输出具体的实施方案，等待用户确认后才能按方案执行
-- **质量保证**:
-  - 编写单元测试验证核心功能
-  - 使用代码覆盖率工具确保测试质量（目标覆盖率 > 90%）
-  - 重视内存安全，使用 valgrind/AddressSanitizer 检测
-  - 单元测试必须按项目规范写在指定目录（`tests/`目录下按阶段和项目组织）
-  - 每个任务完成后必须验证所有单元测试都成功通过，作为任务完成的验证点
-  - 通过运行`./scripts/docker-dev.sh test`并检查输出"100% tests passed"来验证单元测试是否成功
-  - 项目必须能在容器内成功执行`cmake -S . -B build`和`cmake --build build`命令
-  - 注意：由于Docker容器内外路径不同，不能在容器内外混合执行cmake。应该始终在容器内执行cmake，或者在宿主机上执行时先清理build目录。
-  - 可以使用以下命令在容器内验证构建：
+- **Compilation Standard**: `-std=c++20`
+- **Build Directory**: `build/`
+- **Source Directory**: Organized by phase (e.g., `phase1/`)
+- **Test Files**: `*_test.cpp`
+- **Header Files**: `include/` directory
+- **CMake Configuration**: Independent CMakeLists.txt for each project
+- **Documentation Standards**: 
+  - Each executable sub-project's main source file header must contain comments explaining compilation, running, and usage methods
+  - Each library implementation file must also contain usage instructions and running methods
+  - Test files need to include instructions on how to run tests
+- **Development Standards**:
+  - All code comments and documentation must be in English
+  - Do not commit code changes to Git unless explicitly instructed by the user
+  - Before executing any task, output a specific implementation plan and wait for user confirmation before proceeding
+- **Quality Assurance**:
+  - Write unit tests to verify core functionality
+  - Use code coverage tools to ensure test quality (target coverage > 90%)
+  - Pay attention to memory safety, use valgrind/AddressSanitizer for detection
+  - Unit tests must be written in the specified directory according to project standards (`tests/` directory organized by phase and project)
+  - After each task is completed, all unit tests must be verified to pass successfully as a validation point
+  - Verify unit tests are successful by running `./scripts/docker-dev.sh test` and checking for "100% tests passed" output
+  - Projects must be able to successfully execute `cmake -S . -B build` and `cmake --build build` commands within the container
+  - Note: Due to different paths inside and outside Docker containers, do not mix cmake execution inside and outside containers. Always execute cmake within the container, or clean the build directory when executing on the host machine.
+  - You can verify builds within the container using the following commands:
     ```bash
-    # 配置项目
+    # Configure project
     docker-compose run --rm cpp-dev bash -c "cd /app && mkdir -p build && cd build && cmake .."
 
-    # 构建项目
+    # Build project
     docker-compose run --rm cpp-dev bash -c "cd /app && mkdir -p build && cd build && cmake .. && make -j4"
     ```
 
-## Git 提交规范
+## Git Commit Standards
 
-为了保持提交历史的清晰和一致性，我们遵循专业的 Git 提交规范：
+To maintain clear and consistent commit history, we follow professional Git commit standards:
 
-### 提交信息格式
+### Commit Message Format
 ```
 <type>(<scope>): <subject>
 
@@ -83,22 +83,22 @@
 <footer>
 ```
 
-### 提交类型 (Type)
-- `feat`: 新功能
-- `fix`: 修复 bug
-- `bug`: 修复 bug (与 `fix` 同义)
-- `docs`: 文档更新
-- `style`: 代码格式调整 (不影响代码含义的更改，如空格、格式化等)
-- `refactor`: 代码重构 (既不修复 bug 也不添加功能的代码更改)
-- `perf`: 性能优化
-- `test`: 测试相关
-- `build`: 构建系统或外部依赖的更改
-- `ci`: CI 配置文件和脚本的更改
-- `chore`: 其他不修改 src 或测试文件的更改
-- `revert`: 回滚之前的提交
+### Commit Types
+- `feat`: New feature
+- `fix`: Bug fix
+- `bug`: Bug fix (synonymous with `fix`)
+- `docs`: Documentation update
+- `style`: Code formatting adjustment (changes that don't affect code meaning, such as whitespace, formatting, etc.)
+- `refactor`: Code refactoring (code changes that neither fix bugs nor add features)
+- `perf`: Performance optimization
+- `test`: Test-related
+- `build`: Build system or external dependency changes
+- `ci`: CI configuration files and script changes
+- `chore`: Other changes that don't modify src or test files
+- `revert`: Rollback previous commit
 
-### 范围 (Scope)
-范围是可选的，用于标识提交影响的模块或组件，如:
+### Scope
+Scope is optional and used to identify the module or component affected by the commit, such as:
 - `cli-tools`
 - `grep`
 - `ls`
@@ -106,39 +106,43 @@
 - `docker`
 - `tests`
 
-### 提交信息规范
-1. 使用英文编写提交信息
-2. 第一行是简短描述 (<72 字符)
-3. 第二行必须是真正的空行（而不是使用 `\n` 字符）
-4. 第三行开始是详细描述 (可选)
-5. 详细描述中可以包含变更原因、影响范围等信息
+### Commit Message Standards
+1. Write commit messages in English
+2. First line is a brief description (<72 characters)
+3. Second line must be a genuine blank line (not using `\n` character)
+4. Third line onwards is detailed description (optional)
+5. Detailed description can include change reasons, impact scope, and other information
 
-### 示例
+### Examples
 ```
-feat(cli-tools): 实现 grep 命令的基本功能
+feat(cli-tools): Implement basic functionality for grep command
 
-- 添加 grep_lib.cpp 库实现文件
-- 添加 grep_main.cpp 主程序文件
-- 实现文件搜索和模式匹配功能
+- Add grep_lib.cpp library implementation file
+- Add grep_main.cpp main program file
+- Implement file search and pattern matching functionality
 
-fix(grep): 修复 Docker 开发脚本中的参数传递问题
-
-- 修复 run-grep 命令无法传递参数给可执行文件的问题
-- 调整工作目录使 grep 命令能正确访问项目根目录下的文件
-- 添加 shift 命令以正确处理传递给脚本的参数
+Resolves: #123
 ```
 
-## 技术栈重点
+```
+fix(grep): Fix parameter passing issue in Docker development script
 
-- **现代 C++：** 智能指针、lambda、范围 for、constexpr
-- **并发编程：** std::thread、std::atomic、mutex、condition_variable
-- **网络编程：** socket、epoll、非阻塞 IO
-- **系统调用：** 文件 IO、进程管理、内存映射
-- **性能优化：** 内存池、零拷贝、锁优化
+- Fix issue where run-grep command cannot pass parameters to executable file
+- Adjust working directory to allow grep command to correctly access files in project root directory
+- Add shift command to properly handle parameters passed to script
+```
 
-## 开发环境配置
+## Key Technology Stack
 
-### Docker 开发容器
+- **Modern C++**: Smart pointers, lambda, range for, constexpr
+- **Concurrent Programming**: std::thread, std::atomic, mutex, condition_variable
+- **Network Programming**: socket, epoll, non-blocking IO
+- **System Calls**: File IO, process management, memory mapping
+- **Performance Optimization**: Memory pools, zero-copy, lock optimization
+
+## Development Environment Setup
+
+### Docker Development Container
 ```dockerfile
 FROM ubuntu:24.04
 RUN apt update && apt install -y \
@@ -147,56 +151,56 @@ RUN apt update && apt install -y \
 WORKDIR /app
 ```
 
-### VSCode 配置
-- 必装插件：C/C++、CMake Tools、Remote-Containers
-- 调试配置：支持容器内 gdb/lldb 调试
-- 代码格式：clang-format
+### VSCode Configuration
+- Required plugins: C/C++, CMake Tools, Remote-Containers
+- Debugging configuration: Supports gdb/lldb debugging within container
+- Code formatting: clang-format
 
-## 注意事项与最佳实践
+## Notes and Best Practices
 
-1. 所有项目必须在 Docker 容器内编译和运行
-2. 使用 CMake 管理构建，支持 Debug/Release 模式
-3. 编写单元测试验证核心功能
-4. 使用代码覆盖率工具确保测试质量（目标覆盖率 > 90%）
-5. 重视内存安全，使用 valgrind/AddressSanitizer 检测
-6. 每个项目完成后进行性能测试和优化
+1. All projects must be compiled and run within Docker containers
+2. Use CMake to manage builds, supporting Debug/Release modes
+3. Write unit tests to verify core functionality
+4. Use code coverage tools to ensure test quality (target coverage > 90%)
+5. Pay attention to memory safety, use valgrind/AddressSanitizer for detection
+6. Conduct performance testing and optimization after each project completion
 
-## 代码规范
+## Code Standards
 
-### 文件组织
-- 每个子项目包含独立的 `src` 和 `include` 目录
-- 库实现放在 `src` 目录下
-- 头文件放在 `include` 目录下
-- 测试文件放在 `tests` 目录下，按项目阶段组织
+### File Organization
+- Each sub-project contains independent `src` and `include` directories
+- Library implementations are placed in the `src` directory
+- Header files are placed in the `include` directory
+- Test files are placed in the `tests` directory, organized by project phase
 
-### 注释规范
-- 每个源文件头部必须包含文件说明和使用方法
-- 重要的函数需要添加注释说明功能和参数
-- 复杂的逻辑需要添加注释解释实现思路
+### Comment Standards
+- Each source file header must contain file description and usage instructions
+- Important functions need comments explaining functionality and parameters
+- Complex logic needs comments explaining implementation approach
 
-### CMake 规范
-- 根 CMakeLists.txt 管理所有子项目
-- 每个子项目包含独立的 CMakeLists.txt
-- 库使用 `add_library` 创建
-- 可执行文件使用 `add_executable` 创建
-- 使用 `target_link_libraries` 链接依赖
+### CMake Standards
+- Root CMakeLists.txt manages all sub-projects
+- Each sub-project contains independent CMakeLists.txt
+- Libraries are created using `add_library`
+- Executables are created using `add_executable`
+- Dependencies are linked using `target_link_libraries`
 
-### 测试规范
-- 使用 Google Test 进行单元测试
-- 每个测试文件需要包含如何运行测试的说明
-- 测试用例需要覆盖正常和异常情况
-- 测试通过标准：所有测试用例必须 100% 通过，且命令返回码为 0。具体请参考 `docs/test_pass_criteria.md`。
+### Test Standards
+- Use Google Test for unit testing
+- Each test file needs to include instructions on how to run tests
+- Test cases need to cover normal and exceptional situations
+- Test passing standard: All test cases must pass 100%, and command return code must be 0. See `docs/test_pass_criteria.md` for details.
 
-## 目录结构规划
+## Directory Structure Planning
 
 ```
 .
-├── CMakeLists.txt      # 根 CMake 配置，管理所有子项目
-├── build/              # 编译产物目录 (不提交到 Git)
-├── docs/               # 项目文档
-├── docker/             # Docker 相关配置，如 Dockerfile
-├── phase1/             # 阶段 1：语法与工具熟悉
-│   ├── CMakeLists.txt  # 聚合 phase1 的项目
+├── CMakeLists.txt      # Root CMake configuration, manages all sub-projects
+├── build/              # Build output directory (not committed to Git)
+├── docs/               # Project documentation
+├── docker/             # Docker-related configuration, such as Dockerfile
+├── phase1/             # Phase 1: Syntax and tool familiarization
+│   ├── CMakeLists.txt  # Aggregates phase1 projects
 │   ├── cli-tools/
 │   │   ├── CMakeLists.txt
 │   │   ├── include/
@@ -212,21 +216,21 @@ WORKDIR /app
 │   │       └── wc_main.cpp
 │   ├── json-parser/
 │   └── logger/
-├── phase2/             # 阶段 2：系统编程
+├── phase2/             # Phase 2: System programming
 │   ├── memory-pool/
 │   ├── process-manager/
 │   └── threaded-downloader/
-├── phase3/             # 阶段 3：网络编程
+├── phase3/             # Phase 3: Network programming
 │   ├── tcp-chat-room/
 │   ├── http-server/
 │   └── tcp-file-transfer/
-├── phase4/             # 阶段 4：综合实战
+├── phase4/             # Phase 4: Comprehensive practice
 │   ├── crawler/
 │   ├── mini-redis/
 │   └── mini-search/
-├── scripts/            # 辅助脚本 (构建、测试、运行)
-├── tests/              # 测试文件
-│   ├── data/           # 测试数据
+├── scripts/            # Auxiliary scripts (build, test, run)
+├── tests/              # Test files
+│   ├── data/           # Test data
 │   ├── phase1/
 │   │   └── cli-tools/
 │   │       ├── CMakeLists.txt
@@ -243,102 +247,102 @@ WORKDIR /app
 │       ├── crawler/
 │       ├── mini-redis/
 │       └── mini-search/
-└── third_party/        # 第三方依赖库
+└── third_party/        # Third-party dependency libraries
 ```
 
-## 学习建议
+## Learning Recommendations
 
-1. **循序渐进**：按照阶段顺序学习，每个阶段的项目都有其特定的学习目标
-2. **动手实践**：不仅要阅读代码，更要亲手实现和调试
-3. **关注性能**：在实现功能的基础上，注重性能优化和内存管理
-4. **测试驱动**：为关键功能编写单元测试，确保代码质量
-5. **源码阅读**：项目后期可以阅读muduo、leveldb等优秀开源项目的源码
+1. **Progressive Learning**: Follow the phase order for learning, each phase's projects have specific learning objectives
+2. **Hands-on Practice**: Not only read the code, but also implement and debug it yourself
+3. **Focus on Performance**: While implementing functionality, pay attention to performance optimization and memory management
+4. **Test-Driven**: Write unit tests for key functionality to ensure code quality
+5. **Source Code Reading**: In later stages, read source code of excellent open-source projects like muduo and leveldb
 
-## 当前进度
+## Current Progress
 
-项目当前处于 **阶段 4：综合实战**，已完成 **TCP 多线程聊天室**、**HTTP 静态文件服务器**、**TCP 文件传输服务器**、**mini-Redis**、**mini-Search**、**高并发爬虫**。
+The project is currently in **Phase 4: Comprehensive Practice**, with completed **TCP Multi-threaded Chat Room**, **HTTP Static File Server**, **TCP File Transfer Server**, **mini-Redis**, **mini-Search**, and **High-concurrency Crawler**.
 
-所有项目均按照要求编写了单元测试，并验证所有测试都成功通过。测试用例按项目规范写在`tests/`目录下对应的阶段和项目子目录中。
+All projects have been written with unit tests according to requirements, and all tests have been verified to pass successfully. Test cases are written in the `tests/` directory under corresponding phase and project subdirectories according to project standards.
 
-## 运行方式
+## Running Methods
 
-### 使用 Docker 开发脚本
+### Using Docker Development Scripts
 ```bash
-# 构建 Docker 镜像
+# Build Docker image
 ./scripts/docker-dev.sh build
 
-# 启动容器
+# Start container
 ./scripts/docker-dev.sh run
 
-# 进入容器
+# Enter container
 ./scripts/docker-dev.sh exec
 
-# 构建并运行 my_ls
+# Build and run my_ls
 ./scripts/docker-dev.sh run-ls
 
-# 构建并运行 my_grep
+# Build and run my_grep
 ./scripts/docker-dev.sh run-grep
 
-# 构建并运行 my_wc
+# Build and run my_wc
 ./scripts/docker-dev.sh run-wc
 
-# 运行测试 (使用独立的 build-test 目录)
+# Run tests (using independent build-test directory)
 ./scripts/docker-dev.sh test
 
-# 调试测试 (使用独立的 build 目录)
+# Debug tests (using independent build directory)
 ./scripts/docker-dev.sh debug
 
-# 停止容器
+# Stop container
 ./scripts/docker-dev.sh stop
 
-# 清理容器和卷
+# Clean up containers and volumes
 ./scripts/docker-dev.sh clean
 ```
 
-**注意**: 为了提高开发效率，不同的任务使用了独立的构建目录：
-*   `run-*` 和 `debug` 命令使用 `build/` 目录。
-*   `test` 命令使用 `build-test/` 目录。
-*   `coverage` 命令使用 `build_coverage/` 目录。
-这样可以避免在不同任务之间切换时进行不必要的重新编译。
+**Note**: To improve development efficiency, different tasks use independent build directories:
+*   `run-*` and `debug` commands use the `build/` directory.
+*   `test` command uses the `build-test/` directory.
+*   `coverage` command uses the `build_coverage/` directory.
+This avoids unnecessary recompilation when switching between different tasks.
 
-### 手动编译运行
+### Manual Compilation and Running
 ```bash
-# 从项目根目录
+# From project root directory
 cmake -S . -B build
 cmake --build build -- -j
 ./build/phase1/cli-tools/my_ls [path]
 ```
 
-### VSCode 开发容器
-1. 安装 "Dev Containers" 和 "CMake Tools" 插件
-2. 打开项目在开发容器中 (VS Code 会自动 attach 到 Docker)
-3. CMake Tools 自动配置项目 (cmake -S . -B build)
-4. 在底部状态栏选择目标 (如 "my_ls")
-5. 按 F5 构建并调试容器内程序
+### VSCode Development Container
+1. Install "Dev Containers" and "CMake Tools" plugins
+2. Open project in development container (VS Code will automatically attach to Docker)
+3. CMake Tools automatically configures project (cmake -S . -B build)
+4. Select target in bottom status bar (e.g., "my_ls")
+5. Press F5 to build and debug program within container
 
-### GitHub Actions 持续集成
-项目配置了 GitHub Actions 工作流，在每次推送到 `main` 分支或创建拉取请求时自动运行单元测试。
+### GitHub Actions Continuous Integration
+The project is configured with GitHub Actions workflow that automatically runs unit tests when pushing to `main` branch or creating pull requests.
 
-工作流配置文件位于 `.github/workflows/ci.yml`，包含以下步骤：
-1. 在 Ubuntu 24.04 环境中设置构建环境
-2. 安装必要的依赖项（g++, cmake, build-essential等）
-3. 配置和构建项目
-4. 运行所有单元测试
+Workflow configuration file is located at `.github/workflows/ci.yml`, containing the following steps:
+1. Set up build environment in Ubuntu 24.04
+2. Install necessary dependencies (g++, cmake, build-essential, etc.)
+3. Configure and build project
+4. Run all unit tests
 
-可以通过 GitHub 仓库的 "Actions" 标签页查看构建和测试结果。
+You can view build and test results through the "Actions" tab of the GitHub repository.
 
-### 代码覆盖率
-项目支持生成代码覆盖率报告，以确保测试质量：
+### Code Coverage
+The project supports generating code coverage reports to ensure test quality:
 
 ```bash
-# 使用 Docker 生成覆盖率报告
+# Generate coverage report using Docker
 ./scripts/docker-dev.sh coverage
 ```
 
-覆盖率报告将生成在 `build_coverage/coverage/` 目录中：
-- HTML 格式报告：`build_coverage/coverage/index.html`
-- XML 格式报告：`build_coverage/coverage/coverage.xml`
+Coverage reports will be generated in the `build_coverage/coverage/` directory:
+- HTML format report: `build_coverage/coverage/index.html`
+- XML format report: `build_coverage/coverage/coverage.xml`
 
-目标是达到 90% 以上的代码覆盖率，以确保核心功能得到充分测试。
+The goal is to achieve over 90% code coverage to ensure core functionality is thoroughly tested.
 
-通过这个项目的学习，开发者可以系统地掌握Linux C++后端开发的核心技能，为将来从事高性能后端开发工作打下坚实的基础。
+Through this project's learning, developers can systematically master the core skills of Linux C++ backend development and lay a solid foundation for future high-performance backend development work.

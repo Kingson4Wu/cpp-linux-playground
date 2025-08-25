@@ -28,7 +28,7 @@
 目标：能写出稳定、高性能的C++网络服务
 - TCP 多线程聊天室
 - HTTP 静态文件服务器
-- 文件传输服务器
+- TCP 文件传输服务器
 
 ### 阶段 4：综合实战
 目标：结合所有技能，做成可用的后端服务
@@ -218,11 +218,17 @@ WORKDIR /app
 │   ├── json-parser/
 │   └── logger/
 ├── phase2/             # 阶段 2：系统编程
+│   ├── memory-pool/
+│   ├── process-manager/
+│   └── threaded-downloader/
 ├── phase3/             # 阶段 3：网络编程
 │   ├── tcp-chat-room/
 │   ├── http-server/
 │   └── tcp-file-transfer/
 ├── phase4/             # 阶段 4：综合实战
+│   ├── crawler/
+│   ├── mini-redis/
+│   └── mini-search/
 ├── scripts/            # 辅助脚本 (构建、测试、运行)
 ├── tests/              # 测试文件
 │   ├── data/           # 测试数据
@@ -234,10 +240,14 @@ WORKDIR /app
 │   │   ├── memory-pool/
 │   │   ├── process-manager/
 │   │   └── threaded-downloader/
-│   └── phase3/
-│       ├── tcp-chat-room/
-│       ├── http-server/
-│       └── tcp-file-transfer/
+│   ├── phase3/
+│   │   ├── tcp-chat-room/
+│   │   ├── http-server/
+│   │   └── tcp-file-transfer/
+│   └── phase4/
+│       ├── crawler/
+│       ├── mini-redis/
+│       └── mini-search/
 └── third_party/        # 第三方依赖库
 ```
 
@@ -251,7 +261,7 @@ WORKDIR /app
 
 ## 当前进度
 
-项目当前处于 **阶段 3：网络编程**，已完成 **TCP 多线程聊天室**、**HTTP 静态文件服务器**、**TCP 文件传输服务器**。
+项目当前处于 **阶段 4：综合实战**，已完成 **TCP 多线程聊天室**、**HTTP 静态文件服务器**、**TCP 文件传输服务器**、**mini-Redis**、**mini-Search**、**高并发爬虫**。
 
 所有项目均按照要求编写了单元测试，并验证所有测试都成功通过。测试用例按项目规范写在`tests/`目录下对应的阶段和项目子目录中。
 

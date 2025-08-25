@@ -24,8 +24,8 @@ This repository provides a structured learning path for backend engineers to mas
 
 Foundational projects to get comfortable with C++ syntax, build systems, and debugging tools.
 
-#### Command-Line Tools Suite
-- Implementation of simplified versions of `ls`, `grep`, and `wc`
+#### Command-Line Tools Suite (ls, grep, wc)
+- **Implementation**: Simplified versions of standard Unix utilities
 - **Key Technologies**: File I/O operations, string processing, regular expressions (`<regex>`), command-line argument parsing
 - **Learning Points**: 
   - Modern C++ features like range-based for loops, auto type deduction
@@ -33,9 +33,27 @@ Foundational projects to get comfortable with C++ syntax, build systems, and deb
   - Error handling with exceptions
   - CMake build system configuration
 - **Advanced Features**: Multi-threaded processing for large files, colored output, recursive directory traversal
+- **Detailed Features**:
+  - Recursive directory traversal with depth limiting
+  - File type detection and colorized output
+  - Permission display in both symbolic and octal formats
+  - Human-readable file sizes with appropriate units
+  - Sorting options (name, size, modification time)
+  - Filter by file type, extension, or pattern
+  - Regular expression support with multiple syntax options
+  - Case-insensitive and whole-word matching modes
+  - Line numbering and context lines (before/after)
+  - File and directory recursion with exclusion patterns
+  - Binary file handling with automatic detection
+  - Match highlighting in terminal output
+  - Simultaneous counting of lines, words, and characters
+  - Multi-byte character support (UTF-8)
+  - File globbing and recursive directory processing
+  - Custom delimiter specification for word counting
+  - Progress indication for long-running operations
 
 #### JSON Parser
-- Custom JSON parser implementation from scratch
+- **Implementation**: Custom JSON parser implementation from scratch
 - **Key Technologies**: Recursive descent parsing, RAII principles, variant types
 - **Learning Points**:
   - Object-oriented design patterns
@@ -43,9 +61,16 @@ Foundational projects to get comfortable with C++ syntax, build systems, and deb
   - Memory management with smart pointers
   - Exception handling for malformed input
 - **Advanced Features**: JSON serialization/deserialization, streaming parser for large files
+- **Detailed Features**:
+  - Complete JSON specification compliance
+  - DOM-style API for document manipulation
+  - SAX-style streaming parser for memory efficiency
+  - Type-safe accessors with automatic conversion
+  - Error reporting with detailed location information
+  - Pretty-printing with customizable formatting
 
 #### Multi-threaded Logger
-- Thread-safe logging library (mini-spdlog) with multiple sinks
+- **Implementation**: Thread-safe logging library (mini-spdlog) with multiple sinks
 - **Key Technologies**: Mutexes, condition variables, atomic operations, circular buffers
 - **Learning Points**:
   - Thread synchronization primitives
@@ -53,13 +78,20 @@ Foundational projects to get comfortable with C++ syntax, build systems, and deb
   - File I/O buffering for performance
   - Time formatting and timezone handling
 - **Advanced Features**: Asynchronous logging with dedicated threads, log rotation, filtering by severity levels
+- **Detailed Features**:
+  - Multiple log levels (TRACE, DEBUG, INFO, WARN, ERROR, FATAL)
+  - Synchronous and asynchronous logging modes
+  - Multiple output destinations (console, file, syslog)
+  - Log rotation by size and time
+  - Thread-safe operation with minimal overhead
+  - Custom formatting patterns and metadata
 
 ### **Phase 2: System Programming & Multi-threading (Intermediate)**
 
 Projects focused on Linux system calls, process/thread management, and memory management.
 
 #### Multi-threaded Downloader
-- Concurrent file downloader with resume capability (HTTP/HTTPS)
+- **Implementation**: Concurrent file downloader with resume capability (HTTP/HTTPS)
 - **Key Technologies**: libcurl integration, thread pools, futures/promises
 - **Learning Points**:
   - Asynchronous I/O operations
@@ -67,9 +99,16 @@ Projects focused on Linux system calls, process/thread management, and memory ma
   - Progress tracking and cancellation
   - Connection pooling for efficiency
 - **Advanced Features**: Bandwidth throttling, proxy support, multipart downloads
+- **Detailed Features**:
+  - Multi-threaded download engine with connection pooling
+  - HTTP/HTTPS support with certificate validation
+  - Resume interrupted downloads with byte-range requests
+  - Progress tracking with speed calculation
+  - Bandwidth limiting and scheduling
+  - Proxy support with authentication
 
 #### Process Manager
-- Simplified implementation of `ps` or `top` with real-time monitoring
+- **Implementation**: Simplified implementation of `ps` or `top` with real-time monitoring
 - **Key Technologies**: `/proc` filesystem parsing, signal handling, system metrics collection
 - **Learning Points**:
   - Linux kernel interfaces
@@ -77,9 +116,16 @@ Projects focused on Linux system calls, process/thread management, and memory ma
   - Process lifecycle management
   - Real-time data visualization
 - **Advanced Features**: Process tree visualization, resource usage alerts, historical data tracking
+- **Detailed Features**:
+  - Real-time process monitoring with resource usage
+  - Process tree visualization and navigation
+  - Signal sending and process control
+  - Historical data collection and trend analysis
+  - Alerting for abnormal resource consumption
+  - Export to various formats (JSON, CSV, XML)
 
 #### Memory Pool Allocator
-- Custom memory allocator with multiple allocation strategies
+- **Implementation**: Custom memory allocator with multiple allocation strategies
 - **Key Technologies**: Free lists, buddy allocation, slab allocation
 - **Learning Points**:
   - Memory fragmentation prevention
@@ -87,13 +133,20 @@ Projects focused on Linux system calls, process/thread management, and memory ma
   - Alignment requirements for different data types
   - Memory leak detection and debugging
 - **Advanced Features**: Thread-local allocation caches, garbage collection integration
+- **Detailed Features**:
+  - Fixed-block and variable-block allocation strategies
+  - Thread-local allocation caches for reduced contention
+  - Memory usage statistics and fragmentation analysis
+  - Custom alignment support for performance-critical data
+  - Integration with standard allocation interfaces
+  - Debug features for leak detection and corruption checking
 
 ### **Phase 3: Network Programming (Core)**
 
 Projects to develop stable, high-performance C++ network services.
 
 #### Multi-threaded Chat Room (TCP)
-- Multi-client chat application with message broadcasting and private messaging
+- **Implementation**: Multi-client chat application with message broadcasting and private messaging
 - **Key Technologies**: TCP sockets, epoll/kqueue, thread pools, message framing
 - **Learning Points**:
   - Reactor pattern implementation
@@ -101,9 +154,16 @@ Projects to develop stable, high-performance C++ network services.
   - Broadcast and unicast messaging
   - Protocol design and parsing
 - **Advanced Features**: Message persistence, user authentication, chat room management
+- **Detailed Features**:
+  - Multi-user chat with private messaging support
+  - User authentication and session management
+  - Message persistence with database backend
+  - Emoticon and rich text support
+  - File transfer between users
+  - Administration commands and user permissions
 
 #### HTTP Static File Server
-- HTTP server supporting GET/POST requests for static files with advanced features
+- **Implementation**: HTTP server supporting GET/POST requests for static files with advanced features
 - **Key Technologies**: HTTP/1.1 protocol, MIME type detection, keep-alive connections
 - **Learning Points**:
   - HTTP request/response parsing
@@ -111,9 +171,17 @@ Projects to develop stable, high-performance C++ network services.
   - Directory listing and index files
   - Error handling (404, 500, etc.)
 - **Advanced Features**: Gzip compression, range requests, virtual hosting, rate limiting
+- **Detailed Features**:
+  - HTTP/1.1 compliant static file server
+  - MIME type detection and content negotiation
+  - Keep-alive connections with timeout management
+  - Directory listing with customizable templates
+  - Custom error pages and redirects
+  - Basic authentication and access control
+  - Request logging and analytics
 
 #### TCP File Transfer Server
-- Server supporting secure file upload and download with integrity checking
+- **Implementation**: Server supporting secure file upload and download with integrity checking
 - **Key Technologies**: Custom binary protocol, checksum validation, streaming
 - **Learning Points**:
   - Large file transfer optimization
@@ -121,13 +189,20 @@ Projects to develop stable, high-performance C++ network services.
   - File metadata handling
   - Progress reporting and cancellation
 - **Advanced Features**: Resume downloads, directory synchronization, encryption
+- **Detailed Features**:
+  - Secure file transfer with checksum validation
+  - Directory synchronization with delta detection
+  - Resume interrupted transfers automatically
+  - Compression and encryption options
+  - Progress reporting with ETA calculation
+  - Batch operations and scripting support
 
 ### **Phase 4: Comprehensive Projects (Advanced)**
 
 Integrated projects combining C++ language features, system programming, network programming, and performance optimization.
 
 #### Mini-Redis (KV Storage Engine)
-- In-memory key-value storage with Redis-like functionality and persistence
+- **Implementation**: In-memory key-value storage with Redis-like functionality and persistence
 - **Key Technologies**: Hash tables, AOF persistence, snapshotting, RESP protocol
 - **Learning Points**:
   - Data structure implementation (strings, lists, sets, hashes)
@@ -135,9 +210,17 @@ Integrated projects combining C++ language features, system programming, network
   - Command processing pipeline
   - Memory optimization techniques
 - **Advanced Features**: Pub/Sub messaging, transactions, Lua scripting, clustering
+- **Detailed Features**:
+  - Redis-compatible in-memory key-value store
+  - Support for strings, lists, sets, hashes, and sorted sets
+  - Persistence with AOF and RDB snapshots
+  - Pub/Sub messaging with pattern matching
+  - Transactions with WATCH/MULTI/EXEC
+  - Lua scripting for custom operations
+  - Cluster support with sharding
 
 #### Mini-Search (Search Engine)
-- Full-text search engine with inverted index and TF-IDF ranking
+- **Implementation**: Full-text search engine with inverted index and TF-IDF ranking
 - **Key Technologies**: Inverted indexing, stemming algorithms, ranking algorithms
 - **Learning Points**:
   - Text processing and tokenization
@@ -145,9 +228,17 @@ Integrated projects combining C++ language features, system programming, network
   - Query parsing and execution
   - Relevance scoring algorithms
 - **Advanced Features**: Phrase matching, boolean operators, faceted search, spell correction
+- **Detailed Features**:
+  - Full-text search engine with inverted index
+  - TF-IDF and BM25 ranking algorithms
+  - Stemming and stop-word filtering
+  - Phrase matching and boolean operators
+  - Faceted search with aggregation
+  - Spell correction and synonym expansion
+  - REST API for integration
 
 #### High-concurrency Web Crawler
-- Distributed web crawler with politeness policies and content analysis
+- **Implementation**: Distributed web crawler with politeness policies and content analysis
 - **Key Technologies**: HTTP client implementation, robots.txt parsing, content extraction
 - **Learning Points**:
   - Distributed task scheduling
@@ -155,6 +246,14 @@ Integrated projects combining C++ language features, system programming, network
   - Content deduplication
   - Storage backends (filesystem, database)
 - **Advanced Features**: JavaScript rendering support, structured data extraction, sentiment analysis
+- **Detailed Features**:
+  - High-concurrency web crawler with politeness policies
+  - Robots.txt compliance and sitemap parsing
+  - Content extraction with XPath and CSS selectors
+  - Duplicate detection and content hashing
+  - Structured data extraction (microdata, JSON-LD)
+  - Storage backends (filesystem, database, cloud)
+  - Analytics and reporting dashboard
 
 ## 🛠 Technology Stack
 
@@ -302,132 +401,6 @@ cmake --build build-tsan
 # Run with ThreadSanitizer
 ./build-tsan/phase1/cli-tools/my_ls
 ```
-
-## 📊 Detailed Project Components Overview
-
-### Phase 1: CLI Tools
-
-#### my_ls - Enhanced Directory Listing Utility
-- Recursive directory traversal with depth limiting
-- File type detection and colorized output
-- Permission display in both symbolic and octal formats
-- Human-readable file sizes with appropriate units
-- Sorting options (name, size, modification time)
-- Filter by file type, extension, or pattern
-
-#### my_grep - Pattern Matching Tool
-- Regular expression support with multiple syntax options
-- Case-insensitive and whole-word matching modes
-- Line numbering and context lines (before/after)
-- File and directory recursion with exclusion patterns
-- Binary file handling with automatic detection
-- Match highlighting in terminal output
-
-#### my_wc - Word/Line/Character Counter
-- Simultaneous counting of lines, words, and characters
-- Multi-byte character support (UTF-8)
-- File globbing and recursive directory processing
-- Custom delimiter specification for word counting
-- Performance optimization for large files
-- Progress indication for long-running operations
-
-#### JSON Parser Library
-- Complete JSON specification compliance
-- DOM-style API for document manipulation
-- SAX-style streaming parser for memory efficiency
-- Type-safe accessors with automatic conversion
-- Error reporting with detailed location information
-- Pretty-printing with customizable formatting
-
-#### Logger Library
-- Multiple log levels (TRACE, DEBUG, INFO, WARN, ERROR, FATAL)
-- Synchronous and asynchronous logging modes
-- Multiple output destinations (console, file, syslog)
-- Log rotation by size and time
-- Thread-safe operation with minimal overhead
-- Custom formatting patterns and metadata
-
-### Phase 2: System Programming
-
-#### Threaded Downloader
-- Multi-threaded download engine with connection pooling
-- HTTP/HTTPS support with certificate validation
-- Resume interrupted downloads with byte-range requests
-- Progress tracking with speed calculation
-- Bandwidth limiting and scheduling
-- Proxy support with authentication
-
-#### Process Manager
-- Real-time process monitoring with resource usage
-- Process tree visualization and navigation
-- Signal sending and process control
-- Historical data collection and trend analysis
-- Alerting for abnormal resource consumption
-- Export to various formats (JSON, CSV, XML)
-
-#### Memory Pool Allocator
-- Fixed-block and variable-block allocation strategies
-- Thread-local allocation caches for reduced contention
-- Memory usage statistics and fragmentation analysis
-- Custom alignment support for performance-critical data
-- Integration with standard allocation interfaces
-- Debug features for leak detection and corruption checking
-
-### Phase 3: Network Programming
-
-#### TCP Chat Room
-- Multi-user chat with private messaging support
-- User authentication and session management
-- Message persistence with database backend
-- Emoticon and rich text support
-- File transfer between users
-- Administration commands and user permissions
-
-#### HTTP Server
-- HTTP/1.1 compliant static file server
-- MIME type detection and content negotiation
-- Keep-alive connections with timeout management
-- Directory listing with customizable templates
-- Custom error pages and redirects
-- Basic authentication and access control
-- Request logging and analytics
-
-#### TCP File Transfer
-- Secure file transfer with checksum validation
-- Directory synchronization with delta detection
-- Resume interrupted transfers automatically
-- Compression and encryption options
-- Progress reporting with ETA calculation
-- Batch operations and scripting support
-
-### Phase 4: Advanced Applications
-
-#### Mini-Redis
-- Redis-compatible in-memory key-value store
-- Support for strings, lists, sets, hashes, and sorted sets
-- Persistence with AOF and RDB snapshots
-- Pub/Sub messaging with pattern matching
-- Transactions with WATCH/MULTI/EXEC
-- Lua scripting for custom operations
-- Cluster support with sharding
-
-#### Mini-Search
-- Full-text search engine with inverted index
-- TF-IDF and BM25 ranking algorithms
-- Stemming and stop-word filtering
-- Phrase matching and boolean operators
-- Faceted search with aggregation
-- Spell correction and synonym expansion
-- REST API for integration
-
-#### Web Crawler
-- High-concurrency web crawler with politeness policies
-- Robots.txt compliance and sitemap parsing
-- Content extraction with XPath and CSS selectors
-- Duplicate detection and content hashing
-- Structured data extraction (microdata, JSON-LD)
-- Storage backends (filesystem, database, cloud)
-- Analytics and reporting dashboard
 
 ## 📚 Learning Resources
 

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkcpp_linux_playground=globalThis.webpackChunkcpp_linux_playground||[]).push([[1631],{1183:l=>{l.exports=JSON.parse('{"label":"c++","permalink":"/cpp-linux-playground/blog/tags/c","allTagsPath":"/cpp-linux-playground/blog/tags","count":1,"unlisted":false}')}}]);

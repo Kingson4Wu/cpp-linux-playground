@@ -1,3 +1,6 @@
 {
-  "contextFileName": "PROJECT.md"
+  "context": {
+    "fileName": "AGENTS.md"
+  },
+  "$version": 2
 }

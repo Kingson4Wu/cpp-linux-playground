@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkcpp_linux_playground=globalThis.webpackChunkcpp_linux_playground||[]).push([[9022],{7395(l){l.exports=JSON.parse('{"label":"vscode","permalink":"/cpp-linux-playground/blog/tags/vscode","allTagsPath":"/cpp-linux-playground/blog/tags","count":1,"unlisted":false}')}}]);

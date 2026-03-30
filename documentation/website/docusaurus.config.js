@@ -55,6 +55,14 @@ const config = {
     ],
   ],
 
+  scripts: [
+    {
+      src: 'https://static.cloudflareinsights.com/beacon.min.js',
+      defer: true,
+      'data-cf-beacon': '{"token": "40cb59600d874d4ebe8da6d9367b4394"}',
+    },
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
